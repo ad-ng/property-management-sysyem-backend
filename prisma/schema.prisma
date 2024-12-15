@@ -23,7 +23,7 @@ model User {
   dob         DateTime?
   phoneNumber String?
   role        ROLE      @default(client)
-  isVerified  Boolean?
+  isVerified  Boolean?  @default(false)
   profileImg  String?
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
