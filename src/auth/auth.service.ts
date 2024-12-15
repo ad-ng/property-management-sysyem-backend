@@ -29,9 +29,9 @@ export class AuthService {
       access_token: await this.signToken(
         currentUser.id,
         currentUser.email,
-        currentUser.username,
         currentUser.role,
-        currentUser.isVerified
+        currentUser.username,
+        currentUser.isVerified,
       ),
     };
   }
@@ -52,7 +52,7 @@ export class AuthService {
           currentUser.email,
           currentUser.role,
           currentUser.username,
-          currentUser.isVerified
+          currentUser.isVerified,
         ),
       };
     } catch (error) {
@@ -64,13 +64,19 @@ export class AuthService {
     }
   }
 
-  async signToken(id: number, email: string, role: string, username: string, isVerified: boolean) {
+  async signToken(
+    id: number,
+    email: string,
+    role: string,
+    username: string,
+    isVerified: boolean,
+  ) {
     const payload = {
       sub: id,
       email,
-      username,
       role,
-      isVerified
+      username,
+      isVerified,
     };
     return await this.jwt.signAsync(payload, {
       secret: process.env.JWT_SECRET,
