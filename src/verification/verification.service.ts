@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { verMessage } from './messages/verification.message';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -33,6 +37,12 @@ export class VerificationService {
     };
     try {
       const isMessageSent = await transporter.sendMail(options);
+      await this.prisma.user.update({
+        where: { email: user.email },
+        data: {
+          verificationCode: this.verificationCode
+        }
+      })
       return {
         message: 'email sent',
       };
@@ -42,25 +52,28 @@ export class VerificationService {
   }
 
   async verifyOTP(query, email) {
-    const { OTP } = query 
+    const { OTP } = query;
     const currentUser = await this.prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
-    if(!currentUser) throw new NotFoundException('email not found !').getResponse()
+    if (!currentUser)
+      throw new NotFoundException('email not found !').getResponse();
 
-    if(!currentUser.verificationCode) throw new NotFoundException('no otp found')  
-  
-    if (currentUser.verificationCode != OTP) throw new BadRequestException('incorrect OTP');
+    if (!currentUser.verificationCode)
+      throw new NotFoundException('no otp found');
+
+    if (currentUser.verificationCode != OTP)
+      throw new BadRequestException('incorrect OTP');
 
     await this.prisma.user.update({
-       where: { email },
-       data: {
-         isVerified: true
-       }
-     })
-     return {
-       message: 'verified successfully',
-     };
+      where: { email },
+      data: {
+        isVerified: true,
+      },
+    });
+    return {
+      message: 'verified successfully',
+    };
   }
 }
