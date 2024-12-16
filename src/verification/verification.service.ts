@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { verMessage } from './messages/verification.message';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class VerificationService {
-    constructor(private prisma: PrismaService){}
+  constructor(private prisma: PrismaService) {}
   verificationCode = crypto.randomUUID().split('-')[0];
 
   emailTransporter() {
@@ -29,31 +29,38 @@ export class VerificationService {
       from: process.env.EMAIL_USER,
       to: user.email,
       subject: 'Reminder: Confirm your email address',
-      html: verMessage(user,verificationLink,this.verificationCode),
+      html: verMessage(user, verificationLink, this.verificationCode),
     };
     try {
       const isMessageSent = await transporter.sendMail(options);
       return {
-        message: 'email sent'
-      }
+        message: 'email sent',
+      };
     } catch (error) {
-        throw new BadRequestException('incorrect email')
-    }  
+      throw new BadRequestException('incorrect email');
+    }
   }
 
-  async verifyOTP(otp,email){
-    if(otp != this.verificationCode){
-        throw new BadRequestException('incorrect OTP')
-    }
-    await this.prisma.user.update({
-        where: { email },
-        data: {
-            isVerified: true
-        }
+  async verifyOTP(query, email) {
+    const { OTP } = query 
+    const currentUser = await this.prisma.user.findUnique({
+      where: { email }
     })
-    return {
-      message: 'verified successfully'
-    }
-    
+
+    if(!currentUser) throw new NotFoundException('email not found !').getResponse()
+
+    if(!currentUser.verificationCode) throw new NotFoundException('no otp found')  
+  
+    if (currentUser.verificationCode != OTP) throw new BadRequestException('incorrect OTP');
+
+    await this.prisma.user.update({
+       where: { email },
+       data: {
+         isVerified: true
+       }
+     })
+     return {
+       message: 'verified successfully',
+     };
   }
 }

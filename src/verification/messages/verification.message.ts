@@ -1,6 +1,5 @@
-
-export const verMessage = (user, verificationLink, verificationCode) =>{
-    return `<!--
+export const verMessage = (user, verificationLink, verificationCode) => {
+  return `<!--
 * This email was built using Tabular.
 * For more information, visit https://tabular.email
 -->
@@ -246,5 +245,5 @@ text-decoration: none
 </td>
 </tr></table>
 </td></tr><tr><td><div class="t52" style="mso-line-height-rule:exactly;mso-line-height-alt:50px;line-height:50px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
-</html>`
-}
+</html>`;
+};
