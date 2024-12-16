@@ -6,6 +6,6 @@ import { VerificationController } from './verification.controller';
 @Module({
   providers: [VerificationService],
   controllers: [VerificationController],
-  exports: [VerificationService]
+  exports: [VerificationService],
 })
 export class VerificationModule {}

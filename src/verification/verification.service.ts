@@ -4,8 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import { verMessage } from './messages/verification.message';
+import { verMessage } from '../service/mail/messages/verification.message';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { emailSender } from 'src/service/mail/template/mail.template';
 //import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
@@ -13,36 +14,19 @@ export class VerificationService {
   constructor(private prisma: PrismaService) {}
   verificationCode = crypto.randomUUID().split('-')[0];
 
-  emailTransporter() {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT),
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-    return transporter;
-  }
-
   async sendVer(user) {
     const verificationLink = `${process.env.BASE_URL}/verify/${user.email}?OTP=${this.verificationCode}`;
-    const transporter = this.emailTransporter();
-    const options: nodemailer.SendMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: 'Reminder: Confirm your email address',
-      html: verMessage(user, verificationLink, this.verificationCode),
-    };
+    const to = user.email;
+    const subject = 'Reminder: Confirm your email address';
+    const message = verMessage(user, verificationLink, this.verificationCode);
     try {
-      const isMessageSent = await transporter.sendMail(options);
+      emailSender(to, subject, message);
       await this.prisma.user.update({
         where: { email: user.email },
         data: {
-          verificationCode: this.verificationCode
-        }
-      })
+          verificationCode: this.verificationCode,
+        },
+      });
       return {
         message: 'email sent',
       };

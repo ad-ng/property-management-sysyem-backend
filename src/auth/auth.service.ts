@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
-    private verification: VerificationService
+    private verification: VerificationService,
   ) {}
 
   async login(dto) {
@@ -48,7 +48,7 @@ export class AuthService {
           username: dto.username,
         },
       });
-      this.verification.sendVer(currentUser)
+      this.verification.sendVer(currentUser);
       return {
         access_token: await this.signToken(
           currentUser.id,
