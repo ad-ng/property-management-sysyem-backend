@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { VerificationService } from './verification.service';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('verification')
+@Controller('verify')
 export class VerificationController {
   constructor(private verificationService: VerificationService) {}
 
@@ -11,5 +11,10 @@ export class VerificationController {
   @Get('')
   verSender(@Req() req: Request) {
     return this.verificationService.sendVer(req.user);
+  }
+
+  @Get(':email')
+  verifyMe(@Query('OTP') otp:string, @Param('email') email: string,){
+    return this.verificationService.verifyOTP(otp,email)
   }
 }

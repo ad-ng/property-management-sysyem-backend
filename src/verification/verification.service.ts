@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { verMessage } from './messages/verification.message';
+import { PrismaService } from 'src/prisma/prisma.service';
 //import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class VerificationService {
+    constructor(private prisma: PrismaService){}
   verificationCode = crypto.randomUUID().split('-')[0];
 
   emailTransporter() {
@@ -37,5 +39,21 @@ export class VerificationService {
     } catch (error) {
         throw new BadRequestException('incorrect email')
     }  
+  }
+
+  async verifyOTP(otp,email){
+    if(otp != this.verificationCode){
+        throw new BadRequestException('incorrect OTP')
+    }
+    await this.prisma.user.update({
+        where: { email },
+        data: {
+            isVerified: true
+        }
+    })
+    return {
+      message: 'verified successfully'
+    }
+    
   }
 }
