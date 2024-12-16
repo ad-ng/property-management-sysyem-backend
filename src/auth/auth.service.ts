@@ -7,12 +7,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { VerificationService } from 'src/verification/verification.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
+    private verification: VerificationService
   ) {}
 
   async login(dto) {
@@ -46,6 +48,7 @@ export class AuthService {
           username: dto.username,
         },
       });
+      this.verification.sendVer(currentUser)
       return {
         access_token: await this.signToken(
           currentUser.id,
