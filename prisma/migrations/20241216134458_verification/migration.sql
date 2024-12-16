@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ROLE" AS ENUM ('owner', 'manager', 'client');
+CREATE TYPE "ROLE" AS ENUM ('admin', 'owner', 'manager', 'client');
 
 -- CreateEnum
 CREATE TYPE "GENDER" AS ENUM ('male', 'female');
@@ -15,8 +15,9 @@ CREATE TABLE "User" (
     "dob" TIMESTAMP(3),
     "phoneNumber" TEXT,
     "role" "ROLE" NOT NULL DEFAULT 'client',
-    "isVerified" BOOLEAN,
+    "isVerified" BOOLEAN DEFAULT false,
     "profileImg" TEXT,
+    "verificationCode" TEXT,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
