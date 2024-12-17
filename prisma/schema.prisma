@@ -14,22 +14,23 @@ datasource db {
 }
 
 model User {
-  id               Int        @id @default(autoincrement())
-  email            String     @unique
+  id               Int         @id @default(autoincrement())
+  email            String      @unique
   password         String
   fullname         String?
   username         String
   gender           GENDER?
   dob              DateTime?
   phoneNumber      String?
-  role             ROLE       @default(client)
-  isVerified       Boolean?   @default(false)
+  role             ROLE        @default(client)
+  isVerified       Boolean?    @default(false)
   profileImg       String?
   verificationCode String?
   myProperty       Property[]
   leases           Leases[]
-  updatedAt        DateTime   @updatedAt
-  createdAt        DateTime   @default(now())
+  complaint        Complaint[]
+  updatedAt        DateTime    @updatedAt
+  createdAt        DateTime    @default(now())
 }
 
 model Property {
@@ -41,6 +42,7 @@ model Property {
   location    String?
   totalUnits  Int?
   apartment   Apartment[]
+  complaint   Complaint[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -48,6 +50,7 @@ model Property {
 model Apartment {
   id            Int             @id @default(autoincrement())
   propertyId    Int
+  complaint     Complaint[]
   property      Property        @relation(fields: [propertyId], references: [id])
   apartmentName String?
   floor_number  Int?
@@ -69,12 +72,12 @@ model Leases {
   security_deposit DateTime?
   lease_status     lease_status
   payment_due_day  Int
-  payment          Payments[]
+  payment          Payment[]
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 }
 
-model Payments {
+model Payment {
   id              Int            @id @default(autoincrement())
   leaseId         Int
   lease           Leases         @relation(fields: [leaseId], references: [id])
@@ -86,6 +89,19 @@ model Payments {
   paymentStatus   payment_status
   updatedAt       DateTime       @updatedAt
   createdAt       DateTime       @default(now())
+}
+
+model Complaint {
+  id            Int       @id @default(autoincrement())
+  complainantId Int
+  complainant   User      @relation(fields: [complainantId], references: [id])
+  propertyId    Int
+  property      Property  @relation(fields: [propertyId], references: [id])
+  apartmentId   Int
+  apartment     Apartment @relation(fields: [apartmentId], references: [id])
+  description   String
+  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
 }
 
 enum payment_status {
