@@ -14,20 +14,33 @@ datasource db {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  email            String    @unique
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
   password         String
   fullname         String?
   username         String
   gender           GENDER?
   dob              DateTime?
   phoneNumber      String?
-  role             ROLE      @default(client)
-  isVerified       Boolean?  @default(false)
+  role             ROLE       @default(client)
+  isVerified       Boolean?   @default(false)
   profileImg       String?
   verificationCode String?
-  updatedAt        DateTime  @updatedAt
-  createdAt        DateTime  @default(now())
+  myProperty       Property[]
+  updatedAt        DateTime   @updatedAt
+  createdAt        DateTime   @default(now())
+}
+
+model Property {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  ownerId     Int
+  landlord    User     @relation(fields: [ownerId], references: [id])
+  location    String?
+  totalUnits  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum ROLE {
