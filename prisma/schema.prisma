@@ -27,6 +27,7 @@ model User {
   profileImg       String?
   verificationCode String?
   myProperty       Property[]
+  leases           Leases[]
   updatedAt        DateTime   @updatedAt
   createdAt        DateTime   @default(now())
 }
@@ -51,8 +52,30 @@ model Apartment {
   apartmentName String?
   floor_number  Int?
   status        apartmentStatus
+  leases        Leases[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+}
+
+model Leases {
+  id               Int          @id @default(autoincrement())
+  apartmentId      Int
+  apartment        Apartment    @relation(fields: [apartmentId], references: [id])
+  tenantId         Int
+  tenant           User         @relation(fields: [tenantId], references: [id])
+  lease_start_date DateTime
+  lease_end_date   DateTime?
+  monthly_rent     Int
+  security_deposit DateTime?
+  lease_status     lease_status
+  payment_due_day  Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+enum lease_status {
+  active
+  terminated
 }
 
 enum apartmentStatus {
