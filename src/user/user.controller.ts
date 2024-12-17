@@ -7,6 +7,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { UserService } from './user.service';
+import { UserClientDto } from './dto';
 
 @UseGuards(IsVerifiedGuard)
 @UseGuards(AuthGuard('jwt'))
@@ -29,7 +30,7 @@ export class UserController {
   }
   @IsVerifiedCheck(true)
   @Put('me')
-  updateMe(@Req() req: Request, @Body() dto: any) {
+  updateMe(@Req() req: Request, @Body() dto: UserClientDto) {
     return this.userService.upddateUser(req.user, dto);
   }
 }
