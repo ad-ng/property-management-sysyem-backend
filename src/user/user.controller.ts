@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ROLE } from '@prisma/client';
 import { Request, request } from 'express';
@@ -28,10 +28,16 @@ export class UserController {
   me(@Req() req: Request) {
     return this.userService.current(req.user);
   }
-  
+
   @IsVerifiedCheck(true)
   @Put('me')
   updateMe(@Req() req: Request, @Body() dto: UserClientDto) {
     return this.userService.upddateUser(req.user, dto);
+  }
+
+  @IsVerifiedCheck(true)
+  @Delete('me')
+  deleteMe(@Req() req: Request) {
+    return this.userService.deleteUser(req.user);
   }
 }
