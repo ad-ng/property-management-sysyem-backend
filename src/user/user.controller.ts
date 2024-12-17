@@ -18,12 +18,6 @@ export class UserController {
   // @UseGuards(RolesGuard)
 
   @IsVerifiedCheck(true)
-  @Get()
-  testing() {
-    return 'testing user';
-  }
-
-  @IsVerifiedCheck(true)
   @Get('me')
   me(@Req() req: Request) {
     return this.userService.current(req.user);
