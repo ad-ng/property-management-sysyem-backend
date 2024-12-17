@@ -69,8 +69,28 @@ model Leases {
   security_deposit DateTime?
   lease_status     lease_status
   payment_due_day  Int
+  payment          Payments[]
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
+}
+
+model Payments {
+  id              Int            @id @default(autoincrement())
+  leaseId         Int
+  lease           Leases         @relation(fields: [leaseId], references: [id])
+  payment         DateTime
+  totalAmount     Int
+  remainingAmount Int
+  amountPaid      Int
+  paymentMethod   String?
+  paymentStatus   payment_status
+  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime       @default(now())
+}
+
+enum payment_status {
+  paid
+  partially
 }
 
 enum lease_status {
