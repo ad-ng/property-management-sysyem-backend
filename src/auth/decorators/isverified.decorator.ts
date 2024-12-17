@@ -1,4 +1,4 @@
 import { SetMetadata } from "@nestjs/common";
 
-const IsVerifiedCheck = 'IsVerfied'
-export const IsVerified = (isVerified: boolean) => SetMetadata(IsVerifiedCheck, isVerified)
+export const IsVerifiedKey = 'IsVerfied'
+export const IsVerified = (isVerified: boolean) => SetMetadata(IsVerifiedKey, isVerified)
