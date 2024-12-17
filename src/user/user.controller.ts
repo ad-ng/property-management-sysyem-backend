@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ROLE } from '@prisma/client';
 import { Request, request } from 'express';
@@ -26,5 +26,10 @@ export class UserController {
   @Get('me')
   me(@Req() req: Request) {
     return this.userService.current(req.user);
+  }
+  @IsVerifiedCheck(true)
+  @Put('me')
+  updateMe(@Req() req: Request, @Body() dto: any) {
+    return this.userService.upddateUser(req.user, dto);
   }
 }
