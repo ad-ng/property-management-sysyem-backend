@@ -50,4 +50,13 @@ export class UserService {
       return error;
     }
   }
+
+  async deleteUser (user){
+    const currentUser = await this.prisma.user.delete({
+        where: { email: user.email }
+    })
+    return {
+        message: 'user deleted successfully'
+    }
+  }
 }

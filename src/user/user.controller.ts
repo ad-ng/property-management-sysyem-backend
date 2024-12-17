@@ -28,6 +28,7 @@ export class UserController {
   me(@Req() req: Request) {
     return this.userService.current(req.user);
   }
+  
   @IsVerifiedCheck(true)
   @Put('me')
   updateMe(@Req() req: Request, @Body() dto: UserClientDto) {
