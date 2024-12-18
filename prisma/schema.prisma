@@ -171,6 +171,7 @@ model Payment {
   leaseId         Int
   lease           Leases         @relation(fields: [leaseId], references: [id])
   payment         DateTime
+  totalAmount     Int
   remainingAmount Int
   amountPaid      Int
   paymentMethod   String?
