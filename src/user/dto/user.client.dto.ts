@@ -1,8 +1,14 @@
 import { GENDER } from '@prisma/client';
-import { IsDate, IsEmail, IsEnum, IsMimeType, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsMimeType,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UserClientDto {
-
   @IsEmail()
   @IsOptional()
   email: string;
