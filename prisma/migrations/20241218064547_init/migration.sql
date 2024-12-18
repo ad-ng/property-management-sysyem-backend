@@ -139,7 +139,7 @@ CREATE TABLE "Apartment" (
 CREATE TABLE "Leases" (
     "id" SERIAL NOT NULL,
     "apartmentId" INTEGER NOT NULL,
-    "tenantEmail" TEXT NOT NULL,
+    "tenantEmail" TEXT,
     "lease_start_date" TIMESTAMP(3) NOT NULL,
     "lease_end_date" TIMESTAMP(3),
     "monthly_rent" INTEGER NOT NULL,
@@ -256,7 +256,7 @@ ALTER TABLE "Apartment" ADD CONSTRAINT "Apartment_propertyId_fkey" FOREIGN KEY (
 ALTER TABLE "Leases" ADD CONSTRAINT "Leases_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Leases" ADD CONSTRAINT "Leases_tenantEmail_fkey" FOREIGN KEY ("tenantEmail") REFERENCES "User"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Leases" ADD CONSTRAINT "Leases_tenantEmail_fkey" FOREIGN KEY ("tenantEmail") REFERENCES "User"("email") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_leaseId_fkey" FOREIGN KEY ("leaseId") REFERENCES "Leases"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
