@@ -3,8 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +18,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { UserService } from './user.service';
-import { UserAdminUpdateDTO, UserClientDto } from './dto';
+import { DeleteUserDto, UserAdminUpdateDTO, UserClientDto } from './dto';
 import { adminUserDTO } from './dto/user.admin.dto';
 
 @UseGuards(IsVerifiedGuard)
@@ -68,5 +70,13 @@ export class UserController {
   @Put('/admin/update')
   updateUser(@Body() dto: UserAdminUpdateDTO) {
     return this.userService.adminUpdateUser(dto)
+  }
+
+    @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Delete('/admin/:email')
+  adminDelete(@Param() param: DeleteUserDto){
+    return this.userService.adminDeleteUser(param)
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as argon from 'argon2'
@@ -112,6 +112,23 @@ export class UserService {
           throw new BadRequestException('email already taken');
         }
       }
+    }
+  }
+
+  async adminDeleteUser(param){
+    const { email } = param
+    const checkUser = await this.prisma.user.findUnique({
+      where: { email }
+    })
+
+    if(!checkUser) throw new NotFoundException(`no user with email: ${email}  found !`)
+
+    await this.prisma.user.delete({
+      where: { email }
+    })
+
+    return {
+      message: `user with email: ${email} deleted successfully !`
     }
   }
 }
