@@ -59,4 +59,6 @@ export class UserService {
       message: 'user deleted successfully',
     };
   }
+
+  async createAdmin(){}
 }
