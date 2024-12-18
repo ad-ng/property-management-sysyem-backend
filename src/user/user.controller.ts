@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Post,
   Put,
   Req,
   UseGuards,
@@ -16,6 +17,7 @@ import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { UserService } from './user.service';
 import { UserClientDto } from './dto';
+import { adminUserDTO } from './dto/user.admin.dto';
 
 @UseGuards(IsVerifiedGuard)
 @UseGuards(AuthGuard('jwt'))
@@ -50,6 +52,13 @@ export class UserController {
 
   /*
   ___________________________________________________________________________________________________________________
-                                                      user.owner & admin
+                                                      user.admin
   */
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Post('/admin/add')
+  addUser(@Body() dto: adminUserDTO) {
+    return this.userService.createUser(dto);
+  }
 }
