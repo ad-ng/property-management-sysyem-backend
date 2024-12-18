@@ -51,12 +51,12 @@ export class UserService {
     }
   }
 
-  async deleteUser (user){
+  async deleteUser(user) {
     const currentUser = await this.prisma.user.delete({
-        where: { email: user.email }
-    })
+      where: { email: user.email },
+    });
     return {
-        message: 'user deleted successfully'
-    }
+      message: 'user deleted successfully',
+    };
   }
 }
