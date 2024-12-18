@@ -13,7 +13,7 @@ import {
 enum REGROLE {
   client = 'client',
   owner = 'owner',
-  admin = 'admin'
+  admin = 'admin',
 }
 
 export class UserAdminUpdateDTO {
@@ -45,7 +45,7 @@ export class UserAdminUpdateDTO {
   @IsOptional()
   profileImg: File;
 
-@IsEnum(REGROLE, { message: 'role can only be owner, client, admin' })
+  @IsEnum(REGROLE, { message: 'role can only be owner, client, admin' })
   @IsNotEmpty()
   role: string;
 }

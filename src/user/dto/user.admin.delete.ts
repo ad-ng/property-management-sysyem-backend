@@ -1,7 +1,7 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class DeleteUserDto{
-    @IsEmail()
-    @IsNotEmpty()
-    email: string
+export class DeleteUserDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 }

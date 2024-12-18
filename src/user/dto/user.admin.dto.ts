@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 enum REGROLE {
   client = 'client',
   owner = 'owner',
-  admin = 'admin'
+  admin = 'admin',
 }
 
 export class adminUserDTO {

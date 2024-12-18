@@ -1,7 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as argon from 'argon2'
+import * as argon from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -63,7 +67,7 @@ export class UserService {
 
   async createUser(dto) {
     try {
-      const hashedPassword = await argon.hash(dto.password)
+      const hashedPassword = await argon.hash(dto.password);
       const newUser = await this.prisma.user.create({
         data: {
           password: hashedPassword,
@@ -85,12 +89,12 @@ export class UserService {
     }
   }
 
-  async adminUpdateUser(dto){
+  async adminUpdateUser(dto) {
     try {
-      const hashedPassword = await argon.hash(dto.password)
+      const hashedPassword = await argon.hash(dto.password);
       const newUser = await this.prisma.user.update({
-      where: { email: dto.email },
-      data: {
+        where: { email: dto.email },
+        data: {
           email: dto.email,
           password: hashedPassword,
           fullname: dto.fullname,
@@ -99,15 +103,15 @@ export class UserService {
           dob: dto.dob,
           phoneNumber: dto.phoneNumber,
           profileImg: dto.profileImg,
-          role: dto.role
-      }
-    })
-    return {
-      message: 'user updated successfully',
-      newUser
-    }
+          role: dto.role,
+        },
+      });
+      return {
+        message: 'user updated successfully',
+        newUser,
+      };
     } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError) {
+      if (error instanceof PrismaClientKnownRequestError) {
         if (error.code == 'P2002') {
           throw new BadRequestException('email already taken');
         }
@@ -115,20 +119,21 @@ export class UserService {
     }
   }
 
-  async adminDeleteUser(param){
-    const { email } = param
+  async adminDeleteUser(param) {
+    const { email } = param;
     const checkUser = await this.prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
-    if(!checkUser) throw new NotFoundException(`no user with email: ${email}  found !`)
+    if (!checkUser)
+      throw new NotFoundException(`no user with email: ${email}  found !`);
 
     await this.prisma.user.delete({
-      where: { email }
-    })
+      where: { email },
+    });
 
     return {
-      message: `user with email: ${email} deleted successfully !`
-    }
+      message: `user with email: ${email} deleted successfully !`,
+    };
   }
 }

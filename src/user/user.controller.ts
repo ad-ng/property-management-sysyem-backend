@@ -69,14 +69,14 @@ export class UserController {
   @IsVerifiedCheck(true)
   @Put('/admin/update')
   updateUser(@Body() dto: UserAdminUpdateDTO) {
-    return this.userService.adminUpdateUser(dto)
+    return this.userService.adminUpdateUser(dto);
   }
 
-    @Roles(ROLE.admin)
+  @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Delete('/admin/:email')
-  adminDelete(@Param() param: DeleteUserDto){
-    return this.userService.adminDeleteUser(param)
+  adminDelete(@Param() param: DeleteUserDto) {
+    return this.userService.adminDeleteUser(param);
   }
 }
