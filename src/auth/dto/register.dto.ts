@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
+
+enum REGROLE {
+  client = 'client',
+  owner = 'owner'
+}
 
 export class registerDTO {
   @IsNotEmpty()
@@ -12,4 +17,8 @@ export class registerDTO {
   @IsNotEmpty()
   @IsString()
   email: string;
+
+  @IsEnum( REGROLE, { message: 'role can only be owner or client' })
+  @IsNotEmpty()
+  role: string;
 }

@@ -46,6 +46,7 @@ export class AuthService {
           password: hash,
           email: dto.email,
           username: dto.username,
+          role: dto.role
         },
       });
       this.verification.sendVer(currentUser);
