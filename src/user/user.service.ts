@@ -60,5 +60,26 @@ export class UserService {
     };
   }
 
-  async createAdmin(){}
+  async createUser(dto) {
+    try {
+      const newUser = await this.prisma.user.create({
+        data: {
+          password: dto.email,
+          username: dto.email,
+          email: dto.email,
+          role: dto.role,
+        },
+      });
+      return {
+        message: 'user created successfully',
+        newUser,
+      };
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code == 'P2002') {
+          throw new BadRequestException('email already taken');
+        }
+      }
+    }
+  }
 }
