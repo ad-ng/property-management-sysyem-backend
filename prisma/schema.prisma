@@ -26,7 +26,8 @@ model User {
   isVerified       Boolean?      @default(false)
   profileImg       String?
   verificationCode String?
-  myProperty       Property[]
+  myProperty       Property[]    @relation(name: "owner-relation")
+  managerOf        Property[]    @relation(name: "manager-relation")
   leases           Leases[]
   maintenance      Maintenance[]
   complaint        Complaint[]
@@ -120,19 +121,21 @@ model Place {
 }
 
 model Property {
-  id          Int           @id @default(autoincrement())
-  title       String
-  description String?
-  ownerId     Int
-  landlord    User          @relation(fields: [ownerId], references: [id])
-  locationId  Int
-  location    Place         @relation(fields: [locationId], references: [id])
-  totalUnits  Int?
-  apartment   Apartment[]
-  maintenance Maintenance[]
-  complaint   Complaint[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String?
+  managerEmail String?
+  manager      User?         @relation(fields: [managerEmail], references: [email], name: "manager-relation")
+  ownerId      Int
+  landlord     User          @relation(fields: [ownerId], references: [id], name: "owner-relation")
+  locationId   Int
+  location     Place         @relation(fields: [locationId], references: [id])
+  totalUnits   Int?
+  apartment    Apartment[]
+  maintenance  Maintenance[]
+  complaint    Complaint[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Apartment {
