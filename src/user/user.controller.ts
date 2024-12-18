@@ -16,7 +16,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { UserService } from './user.service';
-import { UserClientDto } from './dto';
+import { UserAdminUpdateDTO, UserClientDto } from './dto';
 import { adminUserDTO } from './dto/user.admin.dto';
 
 @UseGuards(IsVerifiedGuard)
@@ -60,5 +60,13 @@ export class UserController {
   @Post('/admin/add')
   addUser(@Body() dto: adminUserDTO) {
     return this.userService.createUser(dto);
+  }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Put('/admin/update')
+  updateUser(@Body() dto: UserAdminUpdateDTO) {
+    return this.userService.adminUpdateUser(dto)
   }
 }

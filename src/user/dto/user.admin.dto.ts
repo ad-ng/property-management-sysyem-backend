@@ -19,7 +19,7 @@ export class adminUserDTO {
   @IsString()
   email: string;
 
-  @IsEnum(REGROLE, { message: 'role can only be owner or client' })
+  @IsEnum(REGROLE, { message: 'role can only be owner, client, admin' })
   @IsNotEmpty()
   role: string;
 }

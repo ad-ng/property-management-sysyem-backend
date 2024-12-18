@@ -64,8 +64,8 @@ export class UserService {
     try {
       const newUser = await this.prisma.user.create({
         data: {
-          password: dto.email,
-          username: dto.email,
+          password: dto.password,
+          username: dto.username,
           email: dto.email,
           role: dto.role,
         },
@@ -76,6 +76,35 @@ export class UserService {
       };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code == 'P2002') {
+          throw new BadRequestException('email already taken');
+        }
+      }
+    }
+  }
+
+  async adminUpdateUser(dto){
+    try {
+      const newUser = await this.prisma.user.update({
+      where: { email: dto.email },
+      data: {
+          email: dto.email,
+          password: dto.password,
+          fullname: dto.fullname,
+          username: dto.username,
+          gender: dto.gender,
+          dob: dto.dob,
+          phoneNumber: dto.phoneNumber,
+          profileImg: dto.profileImg,
+          role: dto.role
+      }
+    })
+    return {
+      message: 'user updated successfully',
+      newUser
+    }
+    } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError) {
         if (error.code == 'P2002') {
           throw new BadRequestException('email already taken');
         }
