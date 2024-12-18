@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 
 enum REGROLE {
   client = 'client',
-  owner = 'owner'
+  owner = 'owner',
 }
 
 export class registerDTO {
@@ -18,7 +18,7 @@ export class registerDTO {
   @IsString()
   email: string;
 
-  @IsEnum( REGROLE, { message: 'role can only be owner or client' })
+  @IsEnum(REGROLE, { message: 'role can only be owner or client' })
   @IsNotEmpty()
   role: string;
 }

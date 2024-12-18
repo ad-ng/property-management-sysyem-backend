@@ -25,6 +25,11 @@ export class UserController {
   // @Roles(ROLE.client)
   // @UseGuards(RolesGuard)
 
+  /*
+  ___________________________________________________________________________________________________________________
+                                                      user.client
+  */
+
   @IsVerifiedCheck(true)
   @Get('me')
   me(@Req() req: Request) {
@@ -42,4 +47,9 @@ export class UserController {
   deleteMe(@Req() req: Request) {
     return this.userService.deleteUser(req.user);
   }
+
+   /*
+  ___________________________________________________________________________________________________________________
+                                                      user.owner & admin
+  */
 }
