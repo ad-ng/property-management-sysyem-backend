@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as argon from 'argon2'
 
 @Injectable()
 export class UserService {
@@ -62,9 +63,10 @@ export class UserService {
 
   async createUser(dto) {
     try {
+      const hashedPassword = await argon.hash(dto.password)
       const newUser = await this.prisma.user.create({
         data: {
-          password: dto.password,
+          password: hashedPassword,
           username: dto.username,
           email: dto.email,
           role: dto.role,
@@ -85,11 +87,12 @@ export class UserService {
 
   async adminUpdateUser(dto){
     try {
+      const hashedPassword = await argon.hash(dto.password)
       const newUser = await this.prisma.user.update({
       where: { email: dto.email },
       data: {
           email: dto.email,
-          password: dto.password,
+          password: hashedPassword,
           fullname: dto.fullname,
           username: dto.username,
           gender: dto.gender,
