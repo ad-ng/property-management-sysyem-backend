@@ -18,7 +18,12 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { UserService } from './user.service';
-import { DeleteUserDto, UserAdminUpdateDTO, UserClientDto, UserQueryDTO } from './dto';
+import {
+  DeleteUserDto,
+  UserAdminUpdateDTO,
+  UserClientDto,
+  UserQueryDTO,
+} from './dto';
 import { adminUserDTO } from './dto/user.admin.dto';
 
 @UseGuards(IsVerifiedGuard)
@@ -56,10 +61,12 @@ export class UserController {
   ___________________________________________________________________________________________________________________
                                                       user.admin
   */
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Get('/admin/all')
   allUser(@Query() query: UserQueryDTO) {
-    return this.userService.getAllUsers(query)
+    return this.userService.getAllUsers(query);
   }
 
   @Roles(ROLE.admin)
