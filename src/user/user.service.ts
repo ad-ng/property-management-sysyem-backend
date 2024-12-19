@@ -65,6 +65,20 @@ export class UserService {
     };
   }
 
+  async getAllUsers(query) {
+    const limit = query.limit || 10;
+    const page = query.page || 1;
+    const allUsers = await this.prisma.user.findMany({
+      orderBy: [{ id: 'desc' }],
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+    return {
+      message: 'users found successfully',
+      allUsers,
+    };
+  }
+
   async createUser(dto) {
     try {
       const hashedPassword = await argon.hash(dto.password);

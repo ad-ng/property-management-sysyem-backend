@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ROLE } from '@prisma/client';
-import { Request, request } from 'express';
+import { query, Request, request } from 'express';
 import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { IsVerifiedGuard } from 'src/auth/gaurds/roles.guard.ts/isverified.guard';
@@ -56,6 +56,13 @@ export class UserController {
   ___________________________________________________________________________________________________________________
                                                       user.admin
   */
+  @IsVerifiedCheck(true)
+  @Get('/admin/all')
+  allUser(@Query() query: any) {
+    //return this.userService.getAllUsers(query)
+    return query;
+  }
+
   @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
