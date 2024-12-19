@@ -71,8 +71,8 @@ export class UserController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Get('/admin/:email')
-  userByEmail(@Param() param: DeleteUserDto){
-    return this.userService.getUserByEmail(param)
+  userByEmail(@Param() param: DeleteUserDto) {
+    return this.userService.getUserByEmail(param);
   }
 
   @Roles(ROLE.admin)
