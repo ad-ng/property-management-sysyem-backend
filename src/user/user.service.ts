@@ -35,7 +35,7 @@ export class UserService {
     // returning response to the user
     return {
       message: 'user found successfully',
-      user: currentUser,
+      data: currentUser,
     };
   }
 
@@ -76,7 +76,7 @@ export class UserService {
       //returning response to the user
       return {
         message: 'user updated successfully',
-        currentUser,
+        data: currentUser,
       };
     } catch (error) {
       /*
@@ -142,11 +142,17 @@ ________________________________________________________________________________
       take: limit, // pagination
       skip: (page - 1) * limit, // pagination
     });
+ 
+    // number of all users
+    const totalUsers = await this.prisma.user.count()
 
     //returning response
     return {
       message: 'users found successfully',
-      allUsers,
+      data: allUsers,
+      currentPage: page,
+      lastPage: Math.ceil(totalUsers/limit),
+      total: totalUsers
     };
   }
 
@@ -171,7 +177,7 @@ ________________________________________________________________________________
     // returning response to the user
     return {
       message: 'user found successfully',
-      newUser,
+      data: newUser,
     };
   }
 
@@ -198,7 +204,7 @@ ________________________________________________________________________________
       // returning response to the user
       return {
         message: 'user created successfully',
-        newUser,
+        data: newUser,
       };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -239,7 +245,7 @@ ________________________________________________________________________________
       // returning response to the user
       return {
         message: 'user updated successfully',
-        newUser,
+        data: newUser,
       };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
