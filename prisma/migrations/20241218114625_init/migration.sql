@@ -113,6 +113,7 @@ CREATE TABLE "Property" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
+    "managerEmail" TEXT,
     "ownerId" INTEGER NOT NULL,
     "locationId" INTEGER NOT NULL,
     "totalUnits" INTEGER,
@@ -242,6 +243,9 @@ ALTER TABLE "Place" ADD CONSTRAINT "Place_sectorId_fkey" FOREIGN KEY ("sectorId"
 
 -- AddForeignKey
 ALTER TABLE "Place" ADD CONSTRAINT "Place_cellId_fkey" FOREIGN KEY ("cellId") REFERENCES "Cell"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Property" ADD CONSTRAINT "Property_managerEmail_fkey" FOREIGN KEY ("managerEmail") REFERENCES "User"("email") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

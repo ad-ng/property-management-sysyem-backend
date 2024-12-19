@@ -3,9 +3,10 @@ import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 enum REGROLE {
   client = 'client',
   owner = 'owner',
+  admin = 'admin',
 }
 
-export class registerDTO {
+export class adminUserDTO {
   @IsNotEmpty()
   @IsString()
   username: string;
@@ -18,7 +19,7 @@ export class registerDTO {
   @IsString()
   email: string;
 
-  @IsEnum(REGROLE, { message: 'role can only be owner or client' })
+  @IsEnum(REGROLE, { message: 'role can only be owner, client, admin' })
   @IsNotEmpty()
   role: string;
 }
