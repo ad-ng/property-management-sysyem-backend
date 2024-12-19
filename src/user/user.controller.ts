@@ -31,8 +31,6 @@ import { adminUserDTO } from './dto/user.admin.dto';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
-  // @Roles(ROLE.client)
-  // @UseGuards(RolesGuard)
 
   /*
   ___________________________________________________________________________________________________________________
@@ -67,6 +65,14 @@ export class UserController {
   @Get('/admin/all')
   allUser(@Query() query: UserQueryDTO) {
     return this.userService.getAllUsers(query);
+  }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Get('/admin/:email')
+  userByEmail(@Param() param: DeleteUserDto){
+    return this.userService.getUserByEmail(param)
   }
 
   @Roles(ROLE.admin)

@@ -79,6 +79,20 @@ export class UserService {
     };
   }
 
+  async getUserByEmail(param) {
+    const { email } = param 
+    const newUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (!newUser)
+      throw new NotFoundException(`no user with email: ${email} found !`);
+
+    return {
+      message: 'user found successfully',
+      newUser,
+    };
+  }
+
   async createUser(dto) {
     try {
       const hashedPassword = await argon.hash(dto.password);
