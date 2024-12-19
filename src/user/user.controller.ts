@@ -32,7 +32,7 @@ import { adminUserDTO } from './dto/user.admin.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-    /*
+  /*
   _______________________________________________________________________________________________________________
   :::::::::::::::::::::::::::::::::::::::::|                      |::::::::::::::::::::::::::::::::::::::::::::::
   :::::::::::::::::::::::::::::::::::::::::| start of client role |::::::::::::::::::::::::::::::::::::::::::::::
@@ -74,7 +74,7 @@ ________________________________________________________________________________
   _________________________________________|                     |______________________________________________
   */
 
-    /*
+  /*
   @IsVerifiedCheck(true) : this is for protecting routes to make sure that on verified user
   .                      can access them
 
@@ -83,7 +83,7 @@ ________________________________________________________________________________
   */
 
   @Roles(ROLE.admin)
-  @UseGuards(RolesGuard) 
+  @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Get('/admin/all') //route ----> GET  /user/admin/all
   allUser(@Query() query: UserQueryDTO) {
