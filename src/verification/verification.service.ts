@@ -57,8 +57,7 @@ export class VerificationService {
     });
 
     // in case user is not found
-    if (!currentUser)
-      throw new NotFoundException('email not found !').getResponse();
+    if (!currentUser) throw new NotFoundException('email not found !');
 
     // in case not otp provided
     if (!currentUser.verificationCode)
