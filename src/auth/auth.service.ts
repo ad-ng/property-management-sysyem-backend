@@ -51,7 +51,6 @@ export class AuthService {
 
   // registering a user function
   async register(dto) {
-
     //hashing the entered password for security purpose
     const hash: string = await argon.hash(dto.password);
 
@@ -89,7 +88,7 @@ export class AuthService {
     }
   }
 
-  // a function to generate a jwt  
+  // a function to generate a jwt
   async signToken(
     id: number,
     email: string,

@@ -142,17 +142,17 @@ ________________________________________________________________________________
       take: limit, // pagination
       skip: (page - 1) * limit, // pagination
     });
- 
+
     // number of all users
-    const totalUsers = await this.prisma.user.count()
+    const totalUsers = await this.prisma.user.count();
 
     //returning response
     return {
       message: 'users found successfully',
       data: allUsers,
       currentPage: page,
-      lastPage: Math.ceil(totalUsers/limit),
-      total: totalUsers
+      lastPage: Math.ceil(totalUsers / limit),
+      total: totalUsers,
     };
   }
 

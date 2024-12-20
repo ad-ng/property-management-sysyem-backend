@@ -14,17 +14,16 @@ export class VerificationService {
   constructor(private prisma: PrismaService) {}
   verificationCode = crypto.randomUUID().split('-')[0];
 
-  // a function to send a verification code 
+  // a function to send a verification code
   async sendVer(user) {
-
     // creating  verification link
     const verificationLink = `${process.env.BASE_URL}/verify/${user.email}?OTP=${this.verificationCode}`;
 
-    // initializing data for sending email 
+    // initializing data for sending email
     const to = user.email; // email to send to { user's email }
     const subject = 'Reminder: Confirm your email address'; // subject of the message
-    const message = verMessage(user, verificationLink, this.verificationCode); // email 
-    
+    const message = verMessage(user, verificationLink, this.verificationCode); // email
+
     try {
       // a function to send email -----> import { emailSender } from 'src/service/mail/template/mail.template';
       emailSender(to, subject, message);
@@ -42,14 +41,13 @@ export class VerificationService {
         message: 'email sent',
       };
     } catch (error) {
-      // in case email is not sent 
+      // in case email is not sent
       throw new BadRequestException('incorrect email');
     }
   }
 
   // verifying otp
   async verifyOTP(query, email) {
-
     // extracting otp from the request query
     const { OTP } = query;
 
@@ -59,8 +57,7 @@ export class VerificationService {
     });
 
     // in case user is not found
-    if (!currentUser)
-      throw new NotFoundException('email not found !').getResponse();
+    if (!currentUser) throw new NotFoundException('email not found !');
 
     // in case not otp provided
     if (!currentUser.verificationCode)
@@ -70,7 +67,7 @@ export class VerificationService {
     if (currentUser.verificationCode != OTP)
       throw new BadRequestException('incorrect OTP');
 
-    // updating isVerified to TRUE 
+    // updating isVerified to TRUE
     await this.prisma.user.update({
       where: { email },
       data: {
