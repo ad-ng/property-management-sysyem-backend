@@ -25,7 +25,15 @@ import {
   UserQueryDTO,
 } from './dto';
 import { adminUserDTO } from './dto/user.admin.dto';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @UseGuards(IsVerifiedGuard)
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -44,6 +52,49 @@ export class UserController {
   .                      can access them
   */
 
+  @ApiOperation({
+    description: 'getting current user info using id from jwt',
+    summary: 'current user',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'you have to log in to access this endpoint',
+    schema: {
+      example: {
+        message: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'ok response',
+    schema: {
+      example: {
+        message: 'user found successfully',
+        data: {
+          id: 4,
+          email: 'Merritt_Senger@hotmail.com',
+          fullname: 'Darrell Rice-Aufderhar',
+          username: 'Reuben_Fahey65',
+          gender: 'female',
+          dob: '1960-06-07T16:15:04.416Z',
+          phoneNumber: '(468) 912-2438 x3019',
+          role: 'owner',
+          isVerified: true,
+          profileImg: null,
+        },
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'you have to be verified',
+    schema: {
+      example: {
+        message: 'you are not verified !',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
   @IsVerifiedCheck(true)
   @Get('me') // route ----> GET  /user/me
   me(@Req() req: Request) {
