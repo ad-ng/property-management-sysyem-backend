@@ -26,6 +26,7 @@ import {
 } from './dto';
 import { adminUserDTO } from './dto/user.admin.dto';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
@@ -101,6 +102,58 @@ export class UserController {
     return this.userService.current(req.user);
   }
 
+  @ApiOperation({
+    summary: 'updating',
+    description: 'current user updating his info',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'you have to log in to access this endpoint',
+    schema: {
+      example: {
+        message: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'you have to be verified',
+    schema: {
+      example: {
+        message: 'you are not verified !',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        message: 'user updated successfully',
+        data: {
+          id: 4,
+          email: 'johndoe@hotmail.com',
+          fullname: 'john doe',
+          username: 'john',
+          gender: 'male',
+          dob: '1960-06-07T16:15:04.416Z',
+          phoneNumber: '08999866654',
+          role: 'owner',
+          isVerified: true,
+          profileImg: null,
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: 'sending already registered email',
+    schema: {
+      example: {
+        message: 'email already taken',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
   @IsVerifiedCheck(true)
   @Put('me') // route ----> PUT  /user/me
   updateMe(@Req() req: Request, @Body() dto: UserClientDto) {
