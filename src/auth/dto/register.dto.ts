@@ -7,22 +7,22 @@ enum REGROLE {
 }
 
 export class registerDTO {
-  @ApiProperty({ example: 'johnd'})
+  @ApiProperty({ example: 'johnd' })
   @IsNotEmpty()
   @IsString()
   username: string;
 
-  @ApiProperty({ example: 'test@123'})
+  @ApiProperty({ example: 'test@123' })
   @IsNotEmpty()
   @IsString()
   password: string;
 
-  @ApiProperty({ example: 'johndoe@hotmail.com'})
+  @ApiProperty({ example: 'johndoe@hotmail.com' })
   @IsNotEmpty()
   @IsString()
   email: string;
 
-  @ApiProperty({ enum: ['client', 'owner']})
+  @ApiProperty({ enum: ['client', 'owner'] })
   @IsEnum(REGROLE, { message: 'role can only be owner or client' })
   @IsNotEmpty()
   role: string;

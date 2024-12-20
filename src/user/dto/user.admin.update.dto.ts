@@ -18,12 +18,12 @@ enum REGROLE {
 }
 
 export class UserAdminUpdateDTO {
-  @ApiProperty({ example: 'johndoe@gmail.com'})
+  @ApiProperty({ example: 'johndoe@gmail.com' })
   @IsEmail()
   @IsOptional()
   email: string;
 
-  @ApiProperty({ example: 'John Doe'})
+  @ApiProperty({ example: 'John Doe' })
   @IsString()
   @IsOptional()
   fullname: string;
@@ -33,7 +33,7 @@ export class UserAdminUpdateDTO {
   @IsOptional()
   username: string;
 
-  @ApiProperty({ example: 'male'})
+  @ApiProperty({ example: 'male' })
   @IsEnum(GENDER, { message: 'gender can only be male or female' })
   @IsOptional()
   gender: string;

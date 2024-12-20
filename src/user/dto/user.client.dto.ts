@@ -10,22 +10,22 @@ import {
 } from 'class-validator';
 
 export class UserClientDto {
-  @ApiProperty({ example: 'johndoe@hotmail.com'})
+  @ApiProperty({ example: 'johndoe@hotmail.com' })
   @IsEmail()
   @IsOptional()
   email: string;
 
-  @ApiProperty({ example: 'john doe'})
+  @ApiProperty({ example: 'john doe' })
   @IsString()
   @IsOptional()
   fullname: string;
 
-  @ApiProperty({ example: 'john'})
+  @ApiProperty({ example: 'john' })
   @IsString()
   @IsOptional()
   username: string;
 
-  @ApiProperty({ enum: ['male', 'female']})
+  @ApiProperty({ enum: ['male', 'female'] })
   @IsEnum(GENDER, { message: 'gender can only be male or female' })
   @IsOptional()
   gender: string;
@@ -35,7 +35,7 @@ export class UserClientDto {
   @IsOptional()
   dob: Date;
 
-  @ApiProperty({ example: '08999866654'})
+  @ApiProperty({ example: '08999866654' })
   @IsString()
   @IsOptional()
   phoneNumber: string;
