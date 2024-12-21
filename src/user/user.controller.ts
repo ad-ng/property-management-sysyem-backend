@@ -314,6 +314,7 @@ ________________________________________________________________________________
 
   @swaggerUnAuthorized()
   @swaggerForbidden()
+  @swaggerNotFound('no user with email {email} found !')
   @ApiBadRequestResponse({
     schema: {
       example: {
@@ -326,9 +327,9 @@ ________________________________________________________________________________
   @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
-  @Put('/admin/update') //route ----> PUT  /user/admin/update
-  updateUser(@Body() dto: UserAdminUpdateDTO) {
-    return this.userService.adminUpdateUser(dto);
+  @Put('/admin/update/:email') //route ----> PUT  /user/admin/update
+  updateUser(@Body() dto: UserAdminUpdateDTO,@Param() param: DeleteUserDto) {
+    return this.userService.adminUpdateUser(dto,param);
   }
 
   @swaggerUnAuthorized()
