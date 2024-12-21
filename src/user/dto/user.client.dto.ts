@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GENDER } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
@@ -30,9 +31,10 @@ export class UserClientDto {
   @IsOptional()
   gender: string;
 
-  @ApiProperty({ example: '2005-01-11' })
+  @ApiProperty({ example: "2024-12-21" })
   @IsDate()
   @IsOptional()
+  @Type(() => Date)
   dob: Date;
 
   @ApiProperty({ example: '08999866654' })

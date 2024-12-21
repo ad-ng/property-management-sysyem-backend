@@ -35,6 +35,12 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import {
+  swaggerForbidden,
+  swaggerNotFound,
+  swaggerOk,
+  swaggerUnAuthorized,
+} from 'src/service/swagger/openapi';
 
 @ApiBearerAuth()
 @UseGuards(IsVerifiedGuard)
@@ -59,45 +65,20 @@ export class UserController {
     description: 'getting current user info using id from jwt',
     summary: 'current user',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
+  @swaggerUnAuthorized()
+  @swaggerOk('ok response', {
+    id: 4,
+    email: 'Merritt_Senger@hotmail.com',
+    fullname: 'Darrell Rice-Aufderhar',
+    username: 'Reuben_Fahey65',
+    gender: 'female',
+    dob: '1960-06-07T16:15:04.416Z',
+    phoneNumber: '(468) 912-2438 x3019',
+    role: 'owner',
+    isVerified: true,
+    profileImg: null,
   })
-  @ApiOkResponse({
-    description: 'ok response',
-    schema: {
-      example: {
-        message: 'user found successfully',
-        data: {
-          id: 4,
-          email: 'Merritt_Senger@hotmail.com',
-          fullname: 'Darrell Rice-Aufderhar',
-          username: 'Reuben_Fahey65',
-          gender: 'female',
-          dob: '1960-06-07T16:15:04.416Z',
-          phoneNumber: '(468) 912-2438 x3019',
-          role: 'owner',
-          isVerified: true,
-          profileImg: null,
-        },
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
+  @swaggerForbidden()
   @IsVerifiedCheck(true)
   @Get('me') // route ----> GET  /user/me
   me(@Req() req: Request) {
@@ -108,43 +89,19 @@ export class UserController {
     summary: 'updating',
     description: 'current user updating his info',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
-  @ApiOkResponse({
-    schema: {
-      example: {
-        message: 'user updated successfully',
-        data: {
-          id: 4,
-          email: 'johndoe@hotmail.com',
-          fullname: 'john doe',
-          username: 'john',
-          gender: 'male',
-          dob: '1960-06-07T16:15:04.416Z',
-          phoneNumber: '08999866654',
-          role: 'owner',
-          isVerified: true,
-          profileImg: null,
-        },
-      },
-    },
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
+  @swaggerOk('user updated successfully', {
+    id: 4,
+    email: 'johndoe@hotmail.com',
+    fullname: 'john doe',
+    username: 'john',
+    gender: 'male',
+    dob: '1960-06-07T16:15:04.416Z',
+    phoneNumber: '08999866654',
+    role: 'owner',
+    isVerified: true,
+    profileImg: null,
   })
   @ApiBadRequestResponse({
     description: 'sending already registered email',
@@ -166,25 +123,8 @@ export class UserController {
     summary: 'deleting account',
     description: 'deleting current account',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
   @ApiOkResponse({
     description: 'when user is actually deleted',
     schema: {
@@ -222,25 +162,8 @@ ________________________________________________________________________________
   @ApiOperation({
     summary: 'fetching all users',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
   @ApiOkResponse({
     schema: {
       example: {
@@ -312,57 +235,27 @@ ________________________________________________________________________________
   @ApiOperation({
     summary: 'fetching a user by email',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'for unregistered email',
-    schema: {
-      example: {
-        message: 'no user with email {email} found !',
-        error: 'Not Found',
-        statusCode: 404,
-      },
-    },
-  })
-  @ApiOkResponse({
-    schema: {
-      example: {
-        message: 'user found successfully',
-        data: {
-          id: 4,
-          email: 'johndoe@hotmail.com',
-          password:
-            '$argon2id$v=19$m=65536,t=3,p=4$u5ZwC7GEvSRoJ/tva+MnPg$6pDqoQoA/KV9r0BbwPE8YWA65nE2eUdSahhOImIEIxo',
-          fullname: 'john doe',
-          username: 'john',
-          gender: 'male',
-          dob: '1960-06-07T16:15:04.416Z',
-          phoneNumber: '08999866654',
-          role: 'admin',
-          isVerified: true,
-          profileImg: null,
-          verificationCode: '978-0-8217-7823-4',
-          updatedAt: '2024-12-20T12:40:31.268Z',
-          createdAt: '2024-12-19T13:39:39.070Z',
-        },
-      },
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
+  @swaggerNotFound('no user with email {email} found !')
+  @swaggerOk('johndoe@hotmail.com', {
+    message: 'user found successfully',
+    data: {
+      id: 4,
+      email: 'johndoe@hotmail.com',
+      password:
+        '$argon2id$v=19$m=65536,t=3,p=4$u5ZwC7GEvSRoJ/tva+MnPg$6pDqoQoA/KV9r0BbwPE8YWA65nE2eUdSahhOImIEIxo',
+      fullname: 'john doe',
+      username: 'john',
+      gender: 'male',
+      dob: '1960-06-07T16:15:04.416Z',
+      phoneNumber: '08999866654',
+      role: 'admin',
+      isVerified: true,
+      profileImg: null,
+      verificationCode: '978-0-8217-7823-4',
+      updatedAt: '2024-12-20T12:40:31.268Z',
+      createdAt: '2024-12-19T13:39:39.070Z',
     },
   })
   @Roles(ROLE.admin)
@@ -376,25 +269,8 @@ ________________________________________________________________________________
   @ApiOperation({
     summary: 'add a user',
   })
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
   @ApiCreatedResponse({
     schema: {
       example: {
@@ -436,25 +312,9 @@ ________________________________________________________________________________
     return this.userService.createUser(dto);
   }
 
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
+  @swaggerNotFound('no user with email {email} found !')
   @ApiBadRequestResponse({
     schema: {
       example: {
@@ -467,47 +327,20 @@ ________________________________________________________________________________
   @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
-  @Put('/admin/update') //route ----> PUT  /user/admin/update
-  updateUser(@Body() dto: UserAdminUpdateDTO) {
-    return this.userService.adminUpdateUser(dto);
+  @Put('/admin/update/:email') //route ----> PUT  /user/admin/update
+  updateUser(@Body() dto: UserAdminUpdateDTO,@Param() param: DeleteUserDto) {
+    return this.userService.adminUpdateUser(dto,param);
   }
 
-  @ApiUnauthorizedResponse({
-    description: 'you have to log in to access this endpoint',
-    schema: {
-      example: {
-        message: 'Unauthorized',
-        statusCode: 401,
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'you have to be verified',
-    schema: {
-      example: {
-        message: 'you are not verified !',
-        error: 'Forbidden',
-        statusCode: 403,
-      },
-    },
-  })
-  @ApiNotFoundResponse({
-    schema: {
-      example: {
-        example: {
-          message: 'no user with email {email} found !',
-          error: 'Not Found',
-          statusCode: 404,
-        },
-      },
-    },
-  })
+  @swaggerUnAuthorized()
+  @swaggerForbidden()
+  @swaggerNotFound('no user with email {email} found !')
   @ApiOkResponse({
     schema: {
       example: {
-        message: 'user with email {email} deleted successfully'
-      }
-    }
+        message: 'user with email {email} deleted successfully',
+      },
+    },
   })
   @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
