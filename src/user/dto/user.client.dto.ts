@@ -31,7 +31,7 @@ export class UserClientDto {
   @IsOptional()
   gender: string;
 
-  @ApiProperty({ example: "2024-12-21" })
+  @ApiProperty({ example: '2024-12-21' })
   @IsDate()
   @IsOptional()
   @Type(() => Date)

@@ -328,8 +328,8 @@ ________________________________________________________________________________
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/admin/update/:email') //route ----> PUT  /user/admin/update
-  updateUser(@Body() dto: UserAdminUpdateDTO,@Param() param: DeleteUserDto) {
-    return this.userService.adminUpdateUser(dto,param);
+  updateUser(@Body() dto: UserAdminUpdateDTO, @Param() param: DeleteUserDto) {
+    return this.userService.adminUpdateUser(dto, param);
   }
 
   @swaggerUnAuthorized()

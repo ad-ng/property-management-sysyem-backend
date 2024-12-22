@@ -221,18 +221,17 @@ ________________________________________________________________________________
      this function is called in controller    @Put('/admin/update')----> updateUser()
      ___________________________________________adminUpdateUser________________________________________________
   */
-  async adminUpdateUser(dto,param) {
-    const { email } = param
-    const checkUser = await this.prisma.user.findUnique({ where : { email }})
+  async adminUpdateUser(dto, param) {
+    const { email } = param;
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
 
-    if (!checkUser) throw new NotFoundException(`no user with email ${email} found`)
+    if (!checkUser)
+      throw new NotFoundException(`no user with email ${email} found`);
 
-      // hashing entered password
-      const hashedPassword = await argon.hash(`${dto.password}`);
-      
+    // hashing entered password
+    const hashedPassword = await argon.hash(`${dto.password}`);
+
     try {
-     
-      
       //updating user
       const newUser = await this.prisma.user.update({
         where: { email },
