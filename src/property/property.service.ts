@@ -11,22 +11,7 @@ export class PropertyService {
         title: dto.title,
         description: dto.description,
         ownerId: user.sub,
-        location: {
-          create: {
-            cell: {
-              create: {
-                name: dto.cell,
-              },
-            },
-          },
-        },
-      },
-      include: {
-        location: {
-          include: {
-            cell: true,
-          },
-        },
+        locationId: 6,
       },
     });
   }
