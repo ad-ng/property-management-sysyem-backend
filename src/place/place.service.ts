@@ -57,29 +57,30 @@ export class PlaceService {
       let myDistrict = await this.prisma.district.findUnique({
         where: { name: dto.district },
       });
-      if (!myDistrict) {
+      if(!myDistrict){
         myDistrict = await this.prisma.district.create({
-          data: dto.district,
-        });
+          data: { name: dto.district }
+        })
       }
 
       let mySector = await this.prisma.sector.findUnique({
         where: { name: dto.sector },
       });
       if (!mySector) {
-        myDistrict = await this.prisma.sector.create({
+        mySector = await this.prisma.sector.create({
           data: { name: dto.sector },
         });
       }
 
-      let myCell = await this.prisma.cell.findUnique({
-        where: { name: dto.cell },
-      });
-      if (!myCell) {
-        myCell = await this.prisma.cell.create({
-          data: { name: dto.cell },
+
+        let myCell = await this.prisma.cell.findUnique({
+          where: { name: dto.cell },
         });
-      }
+        if (!myCell) {
+          myCell = await this.prisma.cell.create({
+            data: { name: dto.cell },
+          });
+        }
 
       return await this.prisma.place.create({
         data: {

@@ -37,7 +37,7 @@ model User {
 
 model Country {
   id        Int      @id @default(autoincrement())
-  name      String   @unique @default("rwanda")
+  name      String   @unique
   place     Place[]
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())

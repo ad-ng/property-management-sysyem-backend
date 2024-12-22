@@ -39,7 +39,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Country" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL DEFAULT 'rwanda',
+    "name" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

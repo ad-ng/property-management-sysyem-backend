@@ -5,6 +5,6 @@ import { PlaceController } from './place.controller';
 @Module({
   providers: [PlaceService],
   controllers: [PlaceController],
-  exports: [PlaceService]
+  exports: [PlaceService],
 })
 export class PlaceModule {}

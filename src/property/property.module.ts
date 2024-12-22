@@ -6,6 +6,6 @@ import { PlaceModule } from 'src/place/place.module';
 @Module({
   providers: [PropertyService],
   controllers: [PropertyController],
-  imports: [PlaceModule]
+  imports: [PlaceModule],
 })
 export class PropertyModule {}
