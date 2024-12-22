@@ -39,10 +39,6 @@ model Country {
   id        Int        @id @default(autoincrement())
   name      String
   place     Place[]
-  province  Province[]
-  district  District[]
-  sector    Sector[]
-  cell      Cell[]
   updatedAt DateTime   @updatedAt
   createdAt DateTime   @default(now())
 }
@@ -50,11 +46,6 @@ model Country {
 model Province {
   id        Int        @id @default(autoincrement())
   name      String
-  countryId Int?
-  country   Country?    @relation(fields: [countryId], references: [id])
-  district  District[]
-  sector    Sector[]
-  cell      Cell[]
   place     Place[]
   updatedAt DateTime   @updatedAt
   createdAt DateTime   @default(now())
@@ -63,12 +54,6 @@ model Province {
 model District {
   id         Int      @id @default(autoincrement())
   name       String
-  countryId  Int?
-  country    Country?  @relation(fields: [countryId], references: [id])
-  provinceId Int?
-  province   Province? @relation(fields: [provinceId], references: [id])
-  sector     Sector[]
-  cell       Cell[]
   place      Place[]
   updatedAt  DateTime @updatedAt
   createdAt  DateTime @default(now())
@@ -77,14 +62,7 @@ model District {
 model Sector {
   id         Int      @id @default(autoincrement())
   name       String
-  countryId  Int?
-  country    Country?  @relation(fields: [countryId], references: [id])
-  provinceId Int?
-  province   Province? @relation(fields: [provinceId], references: [id])
-  districtId Int?
-  district   District? @relation(fields: [districtId], references: [id])
   place      Place[]
-  cell       Cell[]
   updatedAt  DateTime @updatedAt
   createdAt  DateTime @default(now())
 }
@@ -92,14 +70,6 @@ model Sector {
 model Cell {
   id         Int      @id @default(autoincrement())
   name       String
-  countryId  Int?
-  country    Country?  @relation(fields: [countryId], references: [id])
-  provinceId Int?
-  province   Province? @relation(fields: [provinceId], references: [id])
-  districtId Int?
-  district   District? @relation(fields: [districtId], references: [id])
-  sectorId   Int?
-  sector     Sector ?  @relation(fields: [sectorId], references: [id])
   place      Place[]
   updatedAt  DateTime @updatedAt
   createdAt  DateTime @default(now())
