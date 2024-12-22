@@ -193,6 +193,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Country_name_key" ON "Country"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Province_name_key" ON "Province"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "District_name_key" ON "District"("name");
 
 -- CreateIndex
@@ -200,6 +203,9 @@ CREATE UNIQUE INDEX "Sector_name_key" ON "Sector"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cell_name_key" ON "Cell"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Place_countryId_districtId_sectorId_cellId_provinceId_key" ON "Place"("countryId", "districtId", "sectorId", "cellId", "provinceId");
 
 -- AddForeignKey
 ALTER TABLE "Place" ADD CONSTRAINT "Place_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "Country"("id") ON DELETE SET NULL ON UPDATE CASCADE;
