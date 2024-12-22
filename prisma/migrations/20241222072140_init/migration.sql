@@ -39,7 +39,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Country" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'rwanda',
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -188,6 +188,18 @@ CREATE TABLE "Complaint" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Country_name_key" ON "Country"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "District_name_key" ON "District"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Sector_name_key" ON "Sector"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Cell_name_key" ON "Cell"("name");
 
 -- AddForeignKey
 ALTER TABLE "Place" ADD CONSTRAINT "Place_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "Country"("id") ON DELETE SET NULL ON UPDATE CASCADE;
