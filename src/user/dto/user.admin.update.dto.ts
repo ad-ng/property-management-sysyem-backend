@@ -44,7 +44,6 @@ export class UserAdminUpdateDTO {
   @IsOptional()
   @Type(() => Date)
   dob: Date;
-  
 
   @ApiProperty({ example: '(338) 824-5877 x386' })
   @IsString()
