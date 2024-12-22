@@ -29,4 +29,26 @@ export class PropertyService {
       data: newProperty
     };
   }
+
+  async readProperties(query, user){
+    const  page  = query.page || 1
+    const limit = query.limit || 5
+
+    const allProperties = await this.prisma.property.findMany({
+      orderBy: [{ id: 'desc' }],
+      where: { ownerId: user.sub },
+      take: limit,
+      skip: (page -1)*limit
+    })
+
+    const totalProperties = await this.prisma.property.count()
+
+    return {
+      message: 'properties are found successfully',
+      data: allProperties,
+      currentPage: page,
+      lastPage: Math.ceil(totalProperties / limit),
+      total: totalProperties,
+    }
+  }
 }
