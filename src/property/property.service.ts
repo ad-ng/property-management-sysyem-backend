@@ -121,13 +121,14 @@ export class PropertyService {
     }
   }
 
-  async deleteManager(dto, user) {
-    const { managerEmail, id } = dto;
-    const manager = await this.prisma.property.findFirst({
-      where: { managerEmail, id, ownerId: user.sub },
+  async deleteManager(param, user) {
+    const id = parseInt(`${param.id}`);
+
+    const myProperty = await this.prisma.property.findUnique({
+      where: { id, ownerId: user.sub },
     });
 
-    if (!manager) throw new NotFoundException('manager not found');
+    if (!myProperty) throw new NotFoundException('property not found');
 
     try {
       await this.prisma.property.update({
