@@ -10,6 +10,7 @@ export class PropertyService {
   ) {}
 
   async createProperty(dto, user) {
+    if (!dto.country) dto.country = 'rwanda'
     const myPlace = await this.placeService.addPlace(dto);
     const newProperty = await this.prisma.property.create({
       data: {
