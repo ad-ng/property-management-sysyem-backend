@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,7 +35,15 @@ export class PropertyController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Get()
-  getAllProperties(@Query() query: UserQueryDTO, @Req() req: Request){
-    return this.propertyService.readProperties(query,req.user)
+  getAllProperties(@Query() query: UserQueryDTO, @Req() req: Request) {
+    return this.propertyService.readProperties(query, req.user);
+  }
+
+  @Roles(ROLE.owner, ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Get('/:slug')
+  getOneProperty(@Req() req: Request, @Param() param: any) {
+    return this.propertyService.readOne(param,req.user)
   }
 }
