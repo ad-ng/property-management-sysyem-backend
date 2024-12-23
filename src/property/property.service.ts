@@ -64,7 +64,7 @@ export class PropertyService {
   }
 
   async readOne(param, user) {
-    const { slug } = param
+    const { slug } = param;
     const myProperty = await this.prisma.property.findFirst({
       where: { slug, ownerId: user.sub },
     });
@@ -77,37 +77,37 @@ export class PropertyService {
     };
   }
 
-  async makeManager(managerEmail, id, user){
+  async makeManager(managerEmail, id, user) {
     const checkProperty = await this.prisma.property.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
 
-    if(!checkProperty) throw new NotFoundException('property not found')
+    if (!checkProperty) throw new NotFoundException('property not found');
 
     const checkManager = await this.prisma.user.findFirst({
-      where: { email: managerEmail }
-    })
+      where: { email: managerEmail },
+    });
 
-    if(!checkManager) throw new NotFoundException('manager not registered')
+    if (!checkManager) throw new NotFoundException('manager not registered');
 
-    if (checkProperty.ownerId === user.sub ){
+    if (checkProperty.ownerId === user.sub) {
       await this.prisma.property.update({
-        where: { id, ownerId: user.sub},
+        where: { id, ownerId: user.sub },
         data: {
-          managerEmail
-        }
-      })
+          managerEmail,
+        },
+      });
       await this.prisma.user.update({
-        where: { email: managerEmail},
+        where: { email: managerEmail },
         data: {
-          role: 'manager'
-        }
-      })
+          role: 'manager',
+        },
+      });
 
       return {
         message: 'manager added successfully',
-        data: checkProperty
-      }
-    }  
+        data: checkProperty,
+      };
+    }
   }
 }

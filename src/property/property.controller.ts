@@ -44,6 +44,6 @@ export class PropertyController {
   @IsVerifiedCheck(true)
   @Get('/:slug')
   getOneProperty(@Req() req: Request, @Param() param: any) {
-    return this.propertyService.readOne(param,req.user)
+    return this.propertyService.readOne(param, req.user);
   }
 }
