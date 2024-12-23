@@ -50,8 +50,16 @@ export class PropertyController {
   @Roles(ROLE.owner, ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
-  @Post('/manager')
+  @Post('/manager/add')
   async addManager(@Body() dto: any, @Req() req: Request) {
     return this.propertyService.makeManager(dto, req.user);
+  }
+
+  @Roles(ROLE.owner, ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Post('/manager/delete')
+  fireManager(@Body() dto: any, @Req() req: Request) {
+    return this.propertyService.deleteManager(dto, req.user);
   }
 }

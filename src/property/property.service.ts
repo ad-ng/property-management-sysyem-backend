@@ -120,4 +120,28 @@ export class PropertyService {
       };
     }
   }
+
+  async deleteManager(dto, user) {
+    const { managerEmail, id } = dto;
+    const manager = await this.prisma.property.findFirst({
+      where: { managerEmail, id, ownerId: user.sub },
+    });
+
+    if (!manager) throw new NotFoundException('manager not found');
+
+    try {
+      await this.prisma.property.update({
+      where: { id },
+      data: {
+        managerEmail: null,
+      },
+    });
+
+    return {
+      message: 'manager deleted successfully',
+    };
+    } catch (error) {
+      return error
+    }
+  }
 }
