@@ -95,6 +95,7 @@ model Place {
 model Property {
   id           Int           @id @default(autoincrement())
   title        String
+  slug         String
   description  String?
   managerEmail String?
   manager      User?         @relation(fields: [managerEmail], references: [email], name: "manager-relation")
@@ -115,7 +116,8 @@ model Apartment {
   propertyId    Int
   complaint     Complaint[]
   property      Property        @relation(fields: [propertyId], references: [id])
-  apartmentName String?
+  apartmentName String
+  slug          String
   floor_number  Int?
   status        apartmentStatus
   leases        Leases[]

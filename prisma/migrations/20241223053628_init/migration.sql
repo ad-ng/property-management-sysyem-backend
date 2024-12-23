@@ -102,6 +102,7 @@ CREATE TABLE "Place" (
 CREATE TABLE "Property" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "description" TEXT,
     "managerEmail" TEXT,
     "ownerId" INTEGER NOT NULL,
@@ -117,7 +118,8 @@ CREATE TABLE "Property" (
 CREATE TABLE "Apartment" (
     "id" SERIAL NOT NULL,
     "propertyId" INTEGER NOT NULL,
-    "apartmentName" TEXT,
+    "apartmentName" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "floor_number" INTEGER,
     "status" "apartmentStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
