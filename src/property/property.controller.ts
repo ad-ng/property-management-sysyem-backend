@@ -47,11 +47,11 @@ export class PropertyController {
     return this.propertyService.readOne(param, req.user);
   }
 
-    @Roles(ROLE.owner, ROLE.admin)
+  @Roles(ROLE.owner, ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('/manager')
-  async addManager(@Body() dto: any, @Req() req: Request){
-    return this.propertyService.makeManager(dto,req.user)
+  async addManager(@Body() dto: any, @Req() req: Request) {
+    return this.propertyService.makeManager(dto, req.user);
   }
 }

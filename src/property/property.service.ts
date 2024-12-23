@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -78,7 +82,7 @@ export class PropertyService {
   }
 
   async makeManager(dto, user) {
-    const { managerEmail, id } = dto
+    const { managerEmail, id } = dto;
     const checkProperty = await this.prisma.property.findUnique({
       where: { id },
     });
@@ -90,6 +94,11 @@ export class PropertyService {
     });
 
     if (!checkManager) throw new NotFoundException('manager not registered');
+
+    if (checkManager.role == 'owner' || checkManager.role == 'admin')
+      throw new BadRequestException(
+        `user with email: ${managerEmail} can not be manager`,
+      );
 
     if (checkProperty.ownerId === user.sub) {
       await this.prisma.property.update({
