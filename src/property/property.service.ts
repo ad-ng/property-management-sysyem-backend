@@ -77,7 +77,8 @@ export class PropertyService {
     };
   }
 
-  async makeManager(managerEmail, id, user) {
+  async makeManager(dto, user) {
+    const { managerEmail, id } = dto
     const checkProperty = await this.prisma.property.findUnique({
       where: { id },
     });
