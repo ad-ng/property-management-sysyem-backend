@@ -161,9 +161,12 @@ ________________________________________________________________________________
      this function is called in controller    @Get('/admin/:email')----> userByEmail()
      ___________________________________________getUserByEmail________________________________________________
   */
-  async getUserByEmail(param) {
+  async getUserByEmail(param, query) {
     // getting email from request parameter
     const { email } = param;
+
+    const page = query.page || 1
+    const limit = query.limit || 5
 
     // finding that user
     var newUser = await this.prisma.user.findUnique({
@@ -177,14 +180,22 @@ ________________________________________________________________________________
     if (newUser.role == 'owner') {
       newUser = await this.prisma.user.findUnique({
         where: { email },
-        include: { myProperty: true}
+        include: { myProperty: {
+          orderBy: [{ id: 'desc' }],
+          take: limit,
+          skip: (page - 1)* limit
+        }}
       })
     }
 
     if (newUser.role == 'manager') {
       newUser = await this.prisma.user.findUnique({
         where: { email },
-        include: { managerOf: true }
+        include: { managerOf: {
+          orderBy: [ { id: 'desc'} ],
+          take: limit,
+          skip: (page - 1)* limit
+        } }
       })
     }
 
