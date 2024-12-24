@@ -122,7 +122,7 @@ export class PropertyService {
   }
 
   async deleteManager(param, user) {
-    const id = parseInt(`${param.id}`);
+    const { id } = param
 
     const myProperty = await this.prisma.property.findUnique({
       where: { id, ownerId: user.sub },
