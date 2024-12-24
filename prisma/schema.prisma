@@ -36,63 +36,66 @@ model User {
 }
 
 model Country {
-  id        Int        @id @default(autoincrement())
-  name      String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
   place     Place[]
-  updatedAt DateTime   @updatedAt
-  createdAt DateTime   @default(now())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Province {
-  id        Int        @id @default(autoincrement())
-  name      String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
   place     Place[]
-  updatedAt DateTime   @updatedAt
-  createdAt DateTime   @default(now())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model District {
-  id         Int      @id @default(autoincrement())
-  name       String
-  place      Place[]
-  updatedAt  DateTime @updatedAt
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  place     Place[]
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Sector {
-  id         Int      @id @default(autoincrement())
-  name       String
-  place      Place[]
-  updatedAt  DateTime @updatedAt
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  place     Place[]
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Cell {
-  id         Int      @id @default(autoincrement())
-  name       String
-  place      Place[]
-  updatedAt  DateTime @updatedAt
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  place     Place[]
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Place {
   id         Int        @id @default(autoincrement())
   countryId  Int?
-  country    Country?    @relation(fields: [countryId], references: [id])
+  country    Country?   @relation(fields: [countryId], references: [id])
   provinceId Int?
-  province   Province?   @relation(fields: [provinceId], references: [id])
+  province   Province?  @relation(fields: [provinceId], references: [id])
   districtId Int?
-  district   District?   @relation(fields: [districtId], references: [id])
+  district   District?  @relation(fields: [districtId], references: [id])
   sectorId   Int?
-  sector     Sector?     @relation(fields: [sectorId], references: [id])
+  sector     Sector?    @relation(fields: [sectorId], references: [id])
   cellId     Int?
-  cell       Cell?       @relation(fields: [cellId], references: [id])
+  cell       Cell?      @relation(fields: [cellId], references: [id])
   property   Property[]
+
+  @@unique([countryId, districtId, sectorId, cellId, provinceId])
 }
 
 model Property {
   id           Int           @id @default(autoincrement())
   title        String
+  slug         String
   description  String?
   managerEmail String?
   manager      User?         @relation(fields: [managerEmail], references: [email], name: "manager-relation")
@@ -113,7 +116,8 @@ model Apartment {
   propertyId    Int
   complaint     Complaint[]
   property      Property        @relation(fields: [propertyId], references: [id])
-  apartmentName String?
+  apartmentName String
+  slug          String
   floor_number  Int?
   status        apartmentStatus
   leases        Leases[]
