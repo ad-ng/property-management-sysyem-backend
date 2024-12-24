@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { use } from 'passport';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -50,14 +51,18 @@ export class PropertyService {
     const page = query.page || 1;
     const limit = query.limit || 5;
 
-    const allProperties = await this.prisma.property.findMany({
+    const allProperties = user.role == 'owner' ? await this.prisma.property.findMany({
       orderBy: [{ id: 'desc' }],
       where: { ownerId: user.sub },
       take: limit,
       skip: (page - 1) * limit,
+    }) : await this.prisma.property.findMany({
+      orderBy: [{ id: 'desc' }],
+      take: limit,
+      skip: (page - 1) * limit,
     });
 
-    const totalProperties = await this.prisma.property.count();
+    const totalProperties = user.role == 'owner' ? await this.prisma.property.count({ where: { ownerId: user.sub } }) : await this.prisma.property.count();
 
     return {
       message: 'properties are found successfully',
@@ -218,7 +223,7 @@ export class PropertyService {
     if (!checkOwner) throw new NotFoundException('owner not registered')
 
     if (!dto.country) dto.country = 'rwanda';
-    
+
     const myPlace = await this.placeService.addPlace(dto);
     const mySlug = slugify(`${dto.title}`, {
       replacement: '-', // replace spaces with replacement character, defaults to `-`
