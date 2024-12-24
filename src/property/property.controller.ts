@@ -16,7 +16,7 @@ import { ROLE } from '@prisma/client';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { UserQueryDTO } from 'src/user/dto/user.query.dto';
-import { PropertyDTO, PropSlugDTO } from './dto';
+import { AddManagerDTO, PropertyDTO, PropSlugDTO } from './dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('property')
@@ -51,7 +51,7 @@ export class PropertyController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('/manager/add')
-  async addManager(@Body() dto: any, @Req() req: Request) {
+  async addManager(@Body() dto: AddManagerDTO, @Req() req: Request) {
     return this.propertyService.makeManager(dto, req.user);
   }
 
