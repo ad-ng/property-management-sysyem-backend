@@ -80,4 +80,12 @@ export class PropertyController {
   propertyRemoval(@Param() param: PropIdDTO, @Req() req: Request){
     return this.propertyService.deleteProperty(param, req.user)
   }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Post('/admin/add')
+  saveProperty(@Body() dto: any){
+    return this.propertyService.adminAddProperty(dto)
+  }
 }
