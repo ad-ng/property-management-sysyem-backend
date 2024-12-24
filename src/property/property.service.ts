@@ -243,6 +243,13 @@ export class PropertyService {
       locale: 'vi', // language code of the locale to use
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
+
+  if(dto.managerEmail) {
+    const checkManager = await this.prisma.user.findFirst({ where: { email: dto.managerEmail } })
+
+    if (!checkManager) throw new BadRequestException('manager not registered')
+  }
+
     const newProperty = await this.prisma.property.create({
       data: {
         title: dto.title,
