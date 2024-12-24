@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { use } from 'passport';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -50,14 +51,24 @@ export class PropertyService {
     const page = query.page || 1;
     const limit = query.limit || 5;
 
-    const allProperties = await this.prisma.property.findMany({
-      orderBy: [{ id: 'desc' }],
-      where: { ownerId: user.sub },
-      take: limit,
-      skip: (page - 1) * limit,
-    });
+    const allProperties =
+      user.role == 'owner'
+        ? await this.prisma.property.findMany({
+            orderBy: [{ id: 'desc' }],
+            where: { ownerId: user.sub },
+            take: limit,
+            skip: (page - 1) * limit,
+          })
+        : await this.prisma.property.findMany({
+            orderBy: [{ id: 'desc' }],
+            take: limit,
+            skip: (page - 1) * limit,
+          });
 
-    const totalProperties = await this.prisma.property.count();
+    const totalProperties =
+      user.role == 'owner'
+        ? await this.prisma.property.count({ where: { ownerId: user.sub } })
+        : await this.prisma.property.count();
 
     return {
       message: 'properties are found successfully',
@@ -148,13 +159,15 @@ export class PropertyService {
   }
 
   async updateProperty(param, dto, user) {
-    const { id } = param
+    const { id } = param;
 
-    const checkProperty = await this.prisma.property.findUnique({ where: { id } })
+    const checkProperty = await this.prisma.property.findUnique({
+      where: { id },
+    });
 
-    if (!checkProperty) throw new NotFoundException('no property found')
+    if (!checkProperty) throw new NotFoundException('no property found');
 
-    if (checkProperty.ownerId != user.sub) throw ForbiddenException  
+    if (checkProperty.ownerId != user.sub) throw ForbiddenException;
 
     if (!dto.country) dto.country = 'rwanda';
 
@@ -190,25 +203,71 @@ export class PropertyService {
     };
   }
 
-  async deleteProperty(param,user){
-    const { id } = param
+  async deleteProperty(param, user) {
+    const { id } = param;
     const checkProperty = await this.prisma.property.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
 
-    if(!checkProperty) throw new NotFoundException('property not found')
+    if (!checkProperty) throw new NotFoundException('property not found');
 
-    if (checkProperty.ownerId != user.sub) throw ForbiddenException
-    
+    if (checkProperty.ownerId != user.sub) throw ForbiddenException;
+
     try {
       await this.prisma.property.delete({
-        where: { id }
-      })
-     return {
-      message: 'property deleted successfully'
-     }
+        where: { id },
+      });
+      return {
+        message: 'property deleted successfully',
+      };
     } catch (error) {
-      return error
+      return error;
     }
+  }
+
+  async adminAddProperty(dto) {
+    const checkOwner = await this.prisma.user.findUnique({
+      where: { id: dto.ownerId },
+    });
+
+    if (!checkOwner) throw new NotFoundException('owner not registered');
+
+    if (!dto.country) dto.country = 'rwanda';
+
+    const myPlace = await this.placeService.addPlace(dto);
+    const mySlug = slugify(`${dto.title}`, {
+      replacement: '-', // replace spaces with replacement character, defaults to `-`
+      remove: undefined, // remove characters that match regex, defaults to `undefined`
+      lower: false, // convert to lower case, defaults to `false`
+      strict: false, // strip special characters except replacement, defaults to `false`
+      locale: 'vi', // language code of the locale to use
+      trim: true, // trim leading and trailing replacement chars, defaults to `true`
+    });
+
+  if(dto.managerEmail) {
+    const checkManager = await this.prisma.user.findFirst({ where: { email: dto.managerEmail } })
+
+    if (!checkManager) throw new BadRequestException('manager not registered')
+  }
+
+    const newProperty = await this.prisma.property.create({
+      data: {
+        title: dto.title,
+        slug: mySlug,
+        managerEmail: dto.managerEmail,
+        description: dto.description,
+        ownerId: dto.ownerId,
+        locationId: myPlace.id,
+        totalUnits: dto.totalUnits,
+      },
+    });
+    delete newProperty.createdAt;
+    delete newProperty.updatedAt;
+    delete newProperty.id;
+
+    return {
+      message: 'property added successfully',
+      data: newProperty,
+    };
   }
 }

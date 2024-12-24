@@ -18,7 +18,13 @@ import { ROLE } from '@prisma/client';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { UserQueryDTO } from 'src/user/dto/user.query.dto';
-import { AddManagerDTO, PropertyDTO, PropIdDTO, PropSlugDTO } from './dto';
+import {
+  AddManagerDTO,
+  AdminPropertyDTO,
+  PropertyDTO,
+  PropIdDTO,
+  PropSlugDTO,
+} from './dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('property')
@@ -69,15 +75,27 @@ export class PropertyController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/:id')
-  propertyUpdater(@Param() param: PropIdDTO, @Req() req: Request,@Body() dto: PropertyDTO){
-    return this.propertyService.updateProperty(param,dto,req.user)
+  propertyUpdater(
+    @Param() param: PropIdDTO,
+    @Req() req: Request,
+    @Body() dto: PropertyDTO,
+  ) {
+    return this.propertyService.updateProperty(param, dto, req.user);
   }
 
   @Roles(ROLE.owner, ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Delete('/:id')
-  propertyRemoval(@Param() param: PropIdDTO, @Req() req: Request){
-    return this.propertyService.deleteProperty(param, req.user)
+  propertyRemoval(@Param() param: PropIdDTO, @Req() req: Request) {
+    return this.propertyService.deleteProperty(param, req.user);
+  }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Post('/admin/add')
+  saveProperty(@Body() dto: AdminPropertyDTO) {
+    return this.propertyService.adminAddProperty(dto);
   }
 }
