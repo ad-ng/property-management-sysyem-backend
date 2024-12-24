@@ -147,6 +147,49 @@ export class PropertyService {
     }
   }
 
+  async updateProperty(param, dto, user) {
+    const { id } = param
+
+    const checkProperty = await this.prisma.property.findUnique({ where: { id } })
+
+    if (!checkProperty) throw new NotFoundException('no property found')
+
+    if (checkProperty.ownerId != user.sub) throw ForbiddenException  
+
+    if (!dto.country) dto.country = 'rwanda';
+
+    const myPlace = await this.placeService.addPlace(dto);
+
+    const mySlug = slugify(`${dto.title}`, {
+      replacement: '-', // replace spaces with replacement character, defaults to `-`
+      remove: undefined, // remove characters that match regex, defaults to `undefined`
+      lower: false, // convert to lower case, defaults to `false`
+      strict: false, // strip special characters except replacement, defaults to `false`
+      locale: 'vi', // language code of the locale to use
+      trim: true, // trim leading and trailing replacement chars, defaults to `true`
+    });
+
+    const newProperty = await this.prisma.property.update({
+      where: { id },
+      data: {
+        title: dto.title,
+        slug: mySlug,
+        description: dto.description,
+        ownerId: user.sub,
+        locationId: myPlace.id,
+        totalUnits: dto.totalUnits,
+      },
+    });
+    delete newProperty.createdAt;
+    delete newProperty.updatedAt;
+    delete newProperty.id;
+
+    return {
+      message: 'property updated successfully',
+      data: newProperty,
+    };
+  }
+
   async deleteProperty(param,user){
     const { id } = param
     const checkProperty = await this.prisma.property.findUnique({
