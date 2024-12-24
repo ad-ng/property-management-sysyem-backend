@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -61,5 +62,13 @@ export class PropertyController {
   @Get('/manager/delete/:id')
   fireManager(@Param() param: PropIdDTO, @Req() req: Request) {
     return this.propertyService.deleteManager(param, req.user);
+  }
+
+  @Roles(ROLE.owner, ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Delete('/:id')
+  propertyRemoval(@Param() param: PropIdDTO, @Req() req: Request){
+    return this.propertyService.deleteProperty(param, req.user)
   }
 }

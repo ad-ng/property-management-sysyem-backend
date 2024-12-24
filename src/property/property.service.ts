@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -143,6 +144,28 @@ export class PropertyService {
       };
     } catch (error) {
       return error;
+    }
+  }
+
+  async deleteProperty(param,user){
+    const { id } = param
+    const checkProperty = await this.prisma.property.findUnique({
+      where: { id }
+    })
+
+    if(!checkProperty) throw new NotFoundException('property not found')
+
+    if (checkProperty.ownerId != user.sub) throw ForbiddenException
+    
+    try {
+      await this.prisma.property.delete({
+        where: { id }
+      })
+     return {
+      message: 'property deleted successfully'
+     }
+    } catch (error) {
+      return error
     }
   }
 }
