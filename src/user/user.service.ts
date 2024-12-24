@@ -166,13 +166,34 @@ ________________________________________________________________________________
     const { email } = param;
 
     // finding that user
-    const newUser = await this.prisma.user.findUnique({
+    var newUser = await this.prisma.user.findUnique({
       where: { email },
     });
 
     // in case that user was not found !
     if (!newUser)
       throw new NotFoundException(`no user with email: ${email} found !`);
+
+    if (newUser.role == 'owner') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { myProperty: true}
+      })
+    }
+
+    if (newUser.role == 'manager') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { managerOf: true }
+      })
+    }
+
+    if (newUser.role == 'client') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { leases: true }
+      })
+    }
 
     // returning response to the user
     return {
