@@ -122,7 +122,7 @@ export class PropertyService {
   }
 
   async deleteManager(param, user) {
-    const { id } = param
+    const { id } = param;
 
     const myProperty = await this.prisma.property.findUnique({
       where: { id, ownerId: user.sub },
@@ -132,17 +132,17 @@ export class PropertyService {
 
     try {
       await this.prisma.property.update({
-      where: { id },
-      data: {
-        managerEmail: null,
-      },
-    });
+        where: { id },
+        data: {
+          managerEmail: null,
+        },
+      });
 
-    return {
-      message: 'manager deleted successfully',
-    };
+      return {
+        message: 'manager deleted successfully',
+      };
     } catch (error) {
-      return error
+      return error;
     }
   }
 }
