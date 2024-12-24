@@ -262,8 +262,8 @@ ________________________________________________________________________________
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Get('/admin/:email') //route ----> GET  /user/admin/{email}
-  userByEmail(@Param() param: DeleteUserDto) {
-    return this.userService.getUserByEmail(param);
+  userByEmail(@Param() param: DeleteUserDto, @Query() query: UserQueryDTO) {
+    return this.userService.getUserByEmail(param,query);
   }
 
   @ApiOperation({

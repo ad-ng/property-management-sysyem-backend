@@ -161,18 +161,50 @@ ________________________________________________________________________________
      this function is called in controller    @Get('/admin/:email')----> userByEmail()
      ___________________________________________getUserByEmail________________________________________________
   */
-  async getUserByEmail(param) {
+  async getUserByEmail(param, query) {
     // getting email from request parameter
     const { email } = param;
 
+    const page = query.page || 1
+    const limit = query.limit || 5
+
     // finding that user
-    const newUser = await this.prisma.user.findUnique({
+    var newUser = await this.prisma.user.findUnique({
       where: { email },
     });
 
     // in case that user was not found !
     if (!newUser)
       throw new NotFoundException(`no user with email: ${email} found !`);
+
+    if (newUser.role == 'owner') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { myProperty: {
+          orderBy: [{ id: 'desc' }],
+          take: limit,
+          skip: (page - 1)* limit
+        }}
+      })
+    }
+
+    if (newUser.role == 'manager') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { managerOf: {
+          orderBy: [ { id: 'desc'} ],
+          take: limit,
+          skip: (page - 1)* limit
+        } }
+      })
+    }
+
+    if (newUser.role == 'client') {
+      newUser = await this.prisma.user.findUnique({
+        where: { email },
+        include: { leases: true }
+      })
+    }
 
     // returning response to the user
     return {
