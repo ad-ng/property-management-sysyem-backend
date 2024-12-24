@@ -247,6 +247,7 @@ export class PropertyService {
       data: {
         title: dto.title,
         slug: mySlug,
+        managerEmail: dto.managerEmail,
         description: dto.description,
         ownerId: dto.ownerId,
         locationId: myPlace.id,
