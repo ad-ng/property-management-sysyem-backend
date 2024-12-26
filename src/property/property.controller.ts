@@ -98,4 +98,12 @@ export class PropertyController {
   saveProperty(@Body() dto: AdminPropertyDTO) {
     return this.propertyService.adminAddProperty(dto);
   }
+
+    @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Put('/admin/update/:email')
+  propUdate(@Body() dto:any, @Param() param: any){
+    return this.propertyService.adminUpdateProp(dto,param)
+  }
 }

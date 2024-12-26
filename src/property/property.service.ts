@@ -274,7 +274,10 @@ export class PropertyService {
     };
   }
 
-  async adminUpdateProp(dto, email) {
+  async adminUpdateProp(dto, param) {
+
+    const { email } = param
+
     const owner = await this.prisma.user.findUnique({
       where: { email },
     });
