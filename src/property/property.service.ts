@@ -305,6 +305,8 @@ export class PropertyService {
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
 
+    if (!dto.newTitle) dto.newTitle = dto.title
+
     try {
       const propUpdate = await this.prisma.property.update({
         where: { id: checkProperty.id },
