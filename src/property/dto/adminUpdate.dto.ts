@@ -53,5 +53,4 @@ export class AdminPropertyUpdateDTO {
   @IsNumber()
   @IsOptional()
   totalUnits: Number;
-
 }

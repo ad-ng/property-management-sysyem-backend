@@ -101,11 +101,14 @@ export class PropertyController {
     return this.propertyService.adminAddProperty(dto);
   }
 
-    @Roles(ROLE.admin)
+  @Roles(ROLE.admin)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/admin/update/:email')
-  propUdate(@Body() dto:AdminPropertyUpdateDTO, @Param() param: DeleteUserDto){
-    return this.propertyService.adminUpdateProp(dto,param)
+  propUdate(
+    @Body() dto: AdminPropertyUpdateDTO,
+    @Param() param: DeleteUserDto,
+  ) {
+    return this.propertyService.adminUpdateProp(dto, param);
   }
 }

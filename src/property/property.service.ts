@@ -275,8 +275,7 @@ export class PropertyService {
   }
 
   async adminUpdateProp(dto, param) {
-
-    const { email } = param
+    const { email } = param;
 
     const owner = await this.prisma.user.findUnique({
       where: { email },
@@ -305,22 +304,27 @@ export class PropertyService {
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
 
-    if (!dto.newTitle) dto.newTitle = dto.title
+    if (!dto.newTitle) dto.newTitle = dto.title;
 
     if (dto.managerEmail) {
       const manager = await this.prisma.user.findUnique({
-        where: { email: dto.managerEmail }
-      })
-       if (!manager) throw new BadRequestException(`${dto.managerEmail} not register`)
+        where: { email: dto.managerEmail },
+      });
 
-      if (manager.role == 'admin' || manager.role == 'owner') throw new ForbiddenException(`${dto.managerEmail} can not be a manager`)
+      if (!manager)
+        throw new BadRequestException(`${dto.managerEmail} not register`);
+
+      if (manager.role == 'admin' || manager.role == 'owner')
+        throw new ForbiddenException(
+          `${dto.managerEmail} can not be a manager`,
+        );
 
       await this.prisma.user.update({
         where: { email: dto.managerEmail },
         data: {
-          role: 'manager'
-        }
-      })  
+          role: 'manager',
+        },
+      });
     }
 
     try {
