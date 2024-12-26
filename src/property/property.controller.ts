@@ -111,4 +111,12 @@ export class PropertyController {
   ) {
     return this.propertyService.adminUpdateProp(dto, param);
   }
+
+    @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Delete('/admin/delete/:email')
+  adminDeleteProp(@Param() param: DeleteUserDto, @Query() query: any){
+    return this.propertyService.adminDeleteProp(param,query)
+  }
 }

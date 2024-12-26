@@ -367,4 +367,35 @@ export class PropertyService {
       return error;
     }
   }
+
+  async adminDeleteProp(param, query){
+
+    const { email } = param
+    const { title } = query
+
+    const checkOwner = await this.prisma.user.findUnique({
+      where: { email }
+    })
+
+    if (!checkOwner || checkOwner.role == 'client') throw new BadRequestException
+
+    const checkProperty = await this.prisma.property.findFirst({
+      where: { ownerId: checkOwner.id, title }
+    })
+
+    if(!checkProperty) throw new NotFoundException('property not found')
+
+    try {
+      await this.prisma.property.delete({
+        where: { id: checkProperty.id }
+      })
+
+      return {
+        message: 'property deleted successfully'
+      }
+
+    } catch (error) {
+      return error
+    }  
+  }
 }
