@@ -165,8 +165,8 @@ ________________________________________________________________________________
     // getting email from request parameter
     const { email } = param;
 
-    const page = query.page || 1
-    const limit = query.limit || 5
+    const page = query.page || 1;
+    const limit = query.limit || 5;
 
     // finding that user
     var newUser = await this.prisma.user.findUnique({
@@ -180,30 +180,34 @@ ________________________________________________________________________________
     if (newUser.role == 'owner') {
       newUser = await this.prisma.user.findUnique({
         where: { email },
-        include: { myProperty: {
-          orderBy: [{ id: 'desc' }],
-          take: limit,
-          skip: (page - 1)* limit
-        }}
-      })
+        include: {
+          myProperty: {
+            orderBy: [{ id: 'desc' }],
+            take: limit,
+            skip: (page - 1) * limit,
+          },
+        },
+      });
     }
 
     if (newUser.role == 'manager') {
       newUser = await this.prisma.user.findUnique({
         where: { email },
-        include: { managerOf: {
-          orderBy: [ { id: 'desc'} ],
-          take: limit,
-          skip: (page - 1)* limit
-        } }
-      })
+        include: {
+          managerOf: {
+            orderBy: [{ id: 'desc' }],
+            take: limit,
+            skip: (page - 1) * limit,
+          },
+        },
+      });
     }
 
     if (newUser.role == 'client') {
       newUser = await this.prisma.user.findUnique({
         where: { email },
-        include: { leases: true }
-      })
+        include: { leases: true },
+      });
     }
 
     // returning response to the user

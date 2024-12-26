@@ -244,11 +244,14 @@ export class PropertyService {
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
 
-  if(dto.managerEmail) {
-    const checkManager = await this.prisma.user.findFirst({ where: { email: dto.managerEmail } })
+    if (dto.managerEmail) {
+      const checkManager = await this.prisma.user.findFirst({
+        where: { email: dto.managerEmail },
+      });
 
-    if (!checkManager) throw new BadRequestException('manager not registered')
-  }
+      if (!checkManager)
+        throw new BadRequestException('manager not registered');
+    }
 
     const newProperty = await this.prisma.property.create({
       data: {
@@ -271,20 +274,20 @@ export class PropertyService {
     };
   }
 
-  async adminUpdateProp(dto,email){
+  async adminUpdateProp(dto, email) {
     const owner = await this.prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
-    if (!owner) throw new NotFoundException('user not found')
+    if (!owner) throw new NotFoundException('user not found');
 
-    if (owner.role == 'client') throw BadRequestException
+    if (owner.role == 'client') throw BadRequestException;
 
-    const checkProperty =  await this.prisma.property.findFirst({
-      where: { ownerId: owner.id, title: dto.title }
-    })
+    const checkProperty = await this.prisma.property.findFirst({
+      where: { ownerId: owner.id, title: dto.title },
+    });
 
-    if (!checkProperty) throw new NotFoundException('property not found')
+    if (!checkProperty) throw new NotFoundException('property not found');
 
     if (!dto.country) dto.country = 'rwanda';
 
@@ -298,25 +301,25 @@ export class PropertyService {
       locale: 'vi', // language code of the locale to use
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
-    
+
     try {
       const propUpdate = await this.prisma.property.update({
-      where: { id: checkProperty.id },
-      data: {
-        title: dto.newTitle,
-        slug: mySlug,
-        description: dto.description,
-        managerEmail: dto.managerEmail,
-        locationId: myPlace.id,
-        totalUnits: dto.totalUnits
-      }
-    })
-    return {
-      message: 'property updated successfully',
-      data: propUpdate
-    }
+        where: { id: checkProperty.id },
+        data: {
+          title: dto.newTitle,
+          slug: mySlug,
+          description: dto.description,
+          managerEmail: dto.managerEmail,
+          locationId: myPlace.id,
+          totalUnits: dto.totalUnits,
+        },
+      });
+      return {
+        message: 'property updated successfully',
+        data: propUpdate,
+      };
     } catch (error) {
-      return error
+      return error;
     }
   }
 }

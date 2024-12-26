@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class AdminPropertyDTO {
   @IsNotEmpty()
@@ -13,7 +19,7 @@ export class AdminPropertyDTO {
   @IsOptional()
   @IsString()
   @IsEmail()
-  managerEmail: string
+  managerEmail: string;
 
   @IsString()
   @IsOptional()
