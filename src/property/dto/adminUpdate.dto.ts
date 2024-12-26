@@ -57,5 +57,5 @@ export class AdminPropertyUpdateDTO {
   @IsString()
   @IsEmail()
   @IsOptional()
-  owner: string
+  owner: string;
 }

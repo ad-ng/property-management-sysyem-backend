@@ -328,23 +328,24 @@ export class PropertyService {
       });
     }
 
-    var checkNewOwner: User
-    if(dto.owner) {
+    var checkNewOwner: User;
+    if (dto.owner) {
       checkNewOwner = await this.prisma.user.findUnique({
-        where: { email: dto.owner }
-      })
+        where: { email: dto.owner },
+      });
 
-      if (!checkNewOwner) throw new BadRequestException(`${dto.owner} is not registered`)
+      if (!checkNewOwner)
+        throw new BadRequestException(`${dto.owner} is not registered`);
 
       await this.prisma.user.update({
         where: { email: checkNewOwner.email },
         data: {
-          role: 'owner'
-        }
-      })  
+          role: 'owner',
+        },
+      });
     }
 
-    if (!dto.owner) checkNewOwner = owner
+    if (!dto.owner) checkNewOwner = owner;
 
     try {
       const propUpdate = await this.prisma.property.update({
@@ -368,34 +369,33 @@ export class PropertyService {
     }
   }
 
-  async adminDeleteProp(param, query){
-
-    const { email } = param
-    const { title } = query
+  async adminDeleteProp(param, query) {
+    const { email } = param;
+    const { title } = query;
 
     const checkOwner = await this.prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
-    if (!checkOwner || checkOwner.role == 'client') throw new BadRequestException
+    if (!checkOwner || checkOwner.role == 'client')
+      throw new BadRequestException();
 
     const checkProperty = await this.prisma.property.findFirst({
-      where: { ownerId: checkOwner.id, title }
-    })
+      where: { ownerId: checkOwner.id, title },
+    });
 
-    if(!checkProperty) throw new NotFoundException('property not found')
+    if (!checkProperty) throw new NotFoundException('property not found');
 
     try {
       await this.prisma.property.delete({
-        where: { id: checkProperty.id }
-      })
+        where: { id: checkProperty.id },
+      });
 
       return {
-        message: 'property deleted successfully'
-      }
-
+        message: 'property deleted successfully',
+      };
     } catch (error) {
-      return error
-    }  
+      return error;
+    }
   }
 }
