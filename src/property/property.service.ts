@@ -307,6 +307,22 @@ export class PropertyService {
 
     if (!dto.newTitle) dto.newTitle = dto.title
 
+    if (dto.managerEmail) {
+      const manager = await this.prisma.user.findUnique({
+        where: { email: dto.managerEmail }
+      })
+       if (!manager) throw new BadRequestException(`${dto.managerEmail} not register`)
+
+      if (manager.role == 'admin' || manager.role == 'owner') throw new ForbiddenException(`${dto.managerEmail} can not be a manager`)
+
+      await this.prisma.user.update({
+        where: { email: dto.managerEmail },
+        data: {
+          role: 'manager'
+        }
+      })  
+    }
+
     try {
       const propUpdate = await this.prisma.property.update({
         where: { id: checkProperty.id },
