@@ -270,4 +270,53 @@ export class PropertyService {
       data: newProperty,
     };
   }
+
+  async adminUpdateProp(dto,email){
+    const owner = await this.prisma.user.findUnique({
+      where: { email }
+    })
+
+    if (!owner) throw new NotFoundException('user not found')
+
+    if (owner.role == 'client') throw BadRequestException
+
+    const checkProperty =  await this.prisma.property.findFirst({
+      where: { ownerId: owner.id, title: dto.title }
+    })
+
+    if (!checkProperty) throw new NotFoundException('property not found')
+
+    if (!dto.country) dto.country = 'rwanda';
+
+    const myPlace = await this.placeService.addPlace(dto);
+
+    const mySlug = slugify(`${dto.title}`, {
+      replacement: '-', // replace spaces with replacement character, defaults to `-`
+      remove: undefined, // remove characters that match regex, defaults to `undefined`
+      lower: false, // convert to lower case, defaults to `false`
+      strict: false, // strip special characters except replacement, defaults to `false`
+      locale: 'vi', // language code of the locale to use
+      trim: true, // trim leading and trailing replacement chars, defaults to `true`
+    });
+    
+    try {
+      const propUpdate = await this.prisma.property.update({
+      where: { id: checkProperty.id },
+      data: {
+        title: dto.newTitle,
+        slug: mySlug,
+        description: dto.description,
+        managerEmail: dto.managerEmail,
+        locationId: myPlace.id,
+        totalUnits: dto.totalUnits
+      }
+    })
+    return {
+      message: 'property updated successfully',
+      data: propUpdate
+    }
+    } catch (error) {
+      return error
+    }
+  }
 }
