@@ -53,4 +53,9 @@ export class AdminPropertyUpdateDTO {
   @IsNumber()
   @IsOptional()
   totalUnits: Number;
+
+  @IsString()
+  @IsEmail()
+  @IsOptional()
+  owner: string
 }

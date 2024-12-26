@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { use } from 'passport';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
@@ -327,6 +328,24 @@ export class PropertyService {
       });
     }
 
+    var checkNewOwner: User
+    if(dto.owner) {
+      checkNewOwner = await this.prisma.user.findUnique({
+        where: { email: dto.owner }
+      })
+
+      if (!checkNewOwner) throw new BadRequestException(`${dto.owner} is not registered`)
+
+      await this.prisma.user.update({
+        where: { email: checkNewOwner.email },
+        data: {
+          role: 'owner'
+        }
+      })  
+    }
+
+    if (!dto.owner) checkNewOwner = owner
+
     try {
       const propUpdate = await this.prisma.property.update({
         where: { id: checkProperty.id },
@@ -334,6 +353,7 @@ export class PropertyService {
           title: dto.newTitle,
           slug: mySlug,
           description: dto.description,
+          ownerId: checkNewOwner.id,
           managerEmail: dto.managerEmail,
           locationId: myPlace.id,
           totalUnits: dto.totalUnits,
