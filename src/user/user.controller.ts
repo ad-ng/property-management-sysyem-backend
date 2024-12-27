@@ -263,7 +263,7 @@ ________________________________________________________________________________
   @IsVerifiedCheck(true)
   @Get('/admin/:email') //route ----> GET  /user/admin/{email}
   userByEmail(@Param() param: DeleteUserDto, @Query() query: UserQueryDTO) {
-    return this.userService.getUserByEmail(param,query);
+    return this.userService.getUserByEmail(param, query);
   }
 
   @ApiOperation({

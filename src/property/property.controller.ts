@@ -25,6 +25,8 @@ import {
   PropIdDTO,
   PropSlugDTO,
 } from './dto';
+import { DeleteUserDto } from 'src/user/dto';
+import { AdminPropertyUpdateDTO } from './dto/adminUpdate.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('property')
@@ -97,5 +99,24 @@ export class PropertyController {
   @Post('/admin/add')
   saveProperty(@Body() dto: AdminPropertyDTO) {
     return this.propertyService.adminAddProperty(dto);
+  }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Put('/admin/update/:email')
+  propUdate(
+    @Body() dto: AdminPropertyUpdateDTO,
+    @Param() param: DeleteUserDto,
+  ) {
+    return this.propertyService.adminUpdateProp(dto, param);
+  }
+
+  @Roles(ROLE.admin)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Delete('/admin/delete/:email')
+  adminDeleteProp(@Param() param: DeleteUserDto, @Query() query: any) {
+    return this.propertyService.adminDeleteProp(param, query);
   }
 }

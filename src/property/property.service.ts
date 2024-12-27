@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { use } from 'passport';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
@@ -244,11 +245,14 @@ export class PropertyService {
       trim: true, // trim leading and trailing replacement chars, defaults to `true`
     });
 
-  if(dto.managerEmail) {
-    const checkManager = await this.prisma.user.findFirst({ where: { email: dto.managerEmail } })
+    if (dto.managerEmail) {
+      const checkManager = await this.prisma.user.findFirst({
+        where: { email: dto.managerEmail },
+      });
 
-    if (!checkManager) throw new BadRequestException('manager not registered')
-  }
+      if (!checkManager)
+        throw new BadRequestException('manager not registered');
+    }
 
     const newProperty = await this.prisma.property.create({
       data: {
@@ -269,5 +273,129 @@ export class PropertyService {
       message: 'property added successfully',
       data: newProperty,
     };
+  }
+
+  async adminUpdateProp(dto, param) {
+    const { email } = param;
+
+    const owner = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!owner) throw new NotFoundException('user not found');
+
+    if (owner.role == 'client') throw BadRequestException;
+
+    const checkProperty = await this.prisma.property.findFirst({
+      where: { ownerId: owner.id, title: dto.title },
+    });
+
+    if (!checkProperty) throw new NotFoundException('property not found');
+
+    if (!dto.country) dto.country = 'rwanda';
+
+    const myPlace = await this.placeService.addPlace(dto);
+
+    const mySlug = slugify(`${dto.title}`, {
+      replacement: '-', // replace spaces with replacement character, defaults to `-`
+      remove: undefined, // remove characters that match regex, defaults to `undefined`
+      lower: false, // convert to lower case, defaults to `false`
+      strict: false, // strip special characters except replacement, defaults to `false`
+      locale: 'vi', // language code of the locale to use
+      trim: true, // trim leading and trailing replacement chars, defaults to `true`
+    });
+
+    if (!dto.newTitle) dto.newTitle = dto.title;
+
+    if (dto.managerEmail) {
+      const manager = await this.prisma.user.findUnique({
+        where: { email: dto.managerEmail },
+      });
+
+      if (!manager)
+        throw new BadRequestException(`${dto.managerEmail} not register`);
+
+      if (manager.role == 'admin' || manager.role == 'owner')
+        throw new ForbiddenException(
+          `${dto.managerEmail} can not be a manager`,
+        );
+
+      await this.prisma.user.update({
+        where: { email: dto.managerEmail },
+        data: {
+          role: 'manager',
+        },
+      });
+    }
+
+    var checkNewOwner: User;
+    if (dto.owner) {
+      checkNewOwner = await this.prisma.user.findUnique({
+        where: { email: dto.owner },
+      });
+
+      if (!checkNewOwner)
+        throw new BadRequestException(`${dto.owner} is not registered`);
+
+      await this.prisma.user.update({
+        where: { email: checkNewOwner.email },
+        data: {
+          role: 'owner',
+        },
+      });
+    }
+
+    if (!dto.owner) checkNewOwner = owner;
+
+    try {
+      const propUpdate = await this.prisma.property.update({
+        where: { id: checkProperty.id },
+        data: {
+          title: dto.newTitle,
+          slug: mySlug,
+          description: dto.description,
+          ownerId: checkNewOwner.id,
+          managerEmail: dto.managerEmail,
+          locationId: myPlace.id,
+          totalUnits: dto.totalUnits,
+        },
+      });
+      return {
+        message: 'property updated successfully',
+        data: propUpdate,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async adminDeleteProp(param, query) {
+    const { email } = param;
+    const { title } = query;
+
+    const checkOwner = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!checkOwner || checkOwner.role == 'client')
+      throw new BadRequestException();
+
+    const checkProperty = await this.prisma.property.findFirst({
+      where: { ownerId: checkOwner.id, title },
+    });
+
+    if (!checkProperty) throw new NotFoundException('property not found');
+
+    try {
+      await this.prisma.property.delete({
+        where: { id: checkProperty.id },
+      });
+
+      return {
+        message: 'property deleted successfully',
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

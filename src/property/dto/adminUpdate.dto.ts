@@ -7,10 +7,14 @@ import {
   IsString,
 } from 'class-validator';
 
-export class AdminPropertyDTO {
+export class AdminPropertyUpdateDTO {
   @IsNotEmpty()
   @IsString()
   title: String;
+
+  @IsOptional()
+  @IsString()
+  newTitle: String;
 
   @IsString()
   @IsOptional()
@@ -50,7 +54,8 @@ export class AdminPropertyDTO {
   @IsOptional()
   totalUnits: Number;
 
-  @IsNumber()
-  @IsNotEmpty()
-  ownerId: Number;
+  @IsString()
+  @IsEmail()
+  @IsOptional()
+  owner: string;
 }
