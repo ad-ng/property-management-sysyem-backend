@@ -134,4 +134,37 @@ export class ApartmentService {
       return error;
     }
   }
+
+  async deleteApt(param, user){
+    const { id } = param
+
+    const checkApartment = await this.prisma.apartment.findUnique({
+      where: { id }
+    });
+
+    if (!checkApartment) throw new NotFoundException('apartment not found');
+
+    const checkProperty = await this.prisma.property.findUnique({
+      where: { id: checkApartment.propertyId },
+    });
+
+    if (user.role == 'manager') {
+      if (checkProperty.managerEmail != user.email) throw ForbiddenException;
+    }
+
+    if (user.role == 'owner') {
+      if (checkProperty.ownerId != user.sub) throw ForbiddenException;
+    }
+    
+    try {
+      const deleteA = await this.prisma.apartment.delete({
+        where: { id }
+      })
+       return {
+        message: 'apartment deleted successfully'
+       }
+    } catch (error) {
+      return error
+    }
+  }
 }
