@@ -4,6 +4,6 @@ import { ApartmentService } from './apartment.service';
 
 @Module({
   controllers: [ApartmentController],
-  providers: [ApartmentService]
+  providers: [ApartmentService],
 })
 export class ApartmentModule {}

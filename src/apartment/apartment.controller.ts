@@ -9,15 +9,13 @@ import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard'
 @UseGuards(AuthGuard('jwt'))
 @Controller('apartment')
 export class ApartmentController {
-    constructor( private apartmentService: ApartmentService){}
+  constructor(private apartmentService: ApartmentService) {}
 
-  @Roles(ROLE.admin,ROLE.manager,ROLE.owner)
+  @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('')
-  addApartment(@Body() dto: any){
-    return this.apartmentService.saveApartment(dto)
+  addApartment(@Body() dto: any) {
+    return this.apartmentService.saveApartment(dto);
   }
 }
-
-
