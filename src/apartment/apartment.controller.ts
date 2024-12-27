@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApartmentService } from './apartment.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/decorators/role.decorator';
@@ -18,7 +26,7 @@ export class ApartmentController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('')
-  addApartment(@Body() dto: addApartmentDTO,@Req() req: Request) {
+  addApartment(@Body() dto: addApartmentDTO, @Req() req: Request) {
     return this.apartmentService.saveApartment(dto, req.user);
   }
 
@@ -26,7 +34,11 @@ export class ApartmentController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/:id')
-  updateApartment(@Body() dto: addApartmentDTO, @Param() param: PropIdDTO, @Req() req: Request) {
-    return this.apartmentService.apartmentUpdate(dto,param, req.user);
+  updateApartment(
+    @Body() dto: addApartmentDTO,
+    @Param() param: PropIdDTO,
+    @Req() req: Request,
+  ) {
+    return this.apartmentService.apartmentUpdate(dto, param, req.user);
   }
 }

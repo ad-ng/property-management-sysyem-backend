@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import slugify from 'slugify';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -22,12 +26,12 @@ export class ApartmentService {
 
     if (!checkProperty) throw new NotFoundException('property not found');
 
-    if (user.role == 'owner'){
-      if (checkProperty.ownerId != user.sub) throw ForbiddenException
+    if (user.role == 'owner') {
+      if (checkProperty.ownerId != user.sub) throw ForbiddenException;
     }
 
-    if( user.role == 'manager') {
-      if (checkProperty.managerEmail != user.email) throw ForbiddenException
+    if (user.role == 'manager') {
+      if (checkProperty.managerEmail != user.email) throw ForbiddenException;
     }
 
     try {
@@ -49,8 +53,8 @@ export class ApartmentService {
     }
   }
 
-  async apartmentUpdate(dto, param, user){
-    const { id } = param
+  async apartmentUpdate(dto, param, user) {
+    const { id } = param;
     const mySlug = slugify(`${dto.apartmentName}`, {
       replacement: '-', // replace spaces with replacement character, defaults to `-`
       remove: undefined, // remove characters that match regex, defaults to `undefined`
@@ -61,10 +65,10 @@ export class ApartmentService {
     });
 
     const checkApartment = await this.prisma.apartment.findUnique({
-        where: { id }
-    })
+      where: { id },
+    });
 
-    if(!checkApartment) throw new NotFoundException('apartment not found')
+    if (!checkApartment) throw new NotFoundException('apartment not found');
 
     const checkProperty = await this.prisma.property.findUnique({
       where: { id: dto.propertyId },
@@ -72,12 +76,12 @@ export class ApartmentService {
 
     if (!checkProperty) throw new NotFoundException('property not found');
 
-    if(user.role == 'manager') {
-      if(checkProperty.managerEmail != user.email ) throw ForbiddenException
+    if (user.role == 'manager') {
+      if (checkProperty.managerEmail != user.email) throw ForbiddenException;
     }
 
-    if(user.role == 'owner'){
-      if(checkProperty.ownerId != user.sub) throw ForbiddenException
+    if (user.role == 'owner') {
+      if (checkProperty.ownerId != user.sub) throw ForbiddenException;
     }
 
     try {
