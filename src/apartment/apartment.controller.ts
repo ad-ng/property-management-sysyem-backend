@@ -18,8 +18,8 @@ export class ApartmentController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('')
-  addApartment(@Body() dto: addApartmentDTO) {
-    return this.apartmentService.saveApartment(dto);
+  addApartment(@Body() dto: addApartmentDTO,@Req() req: Request) {
+    return this.apartmentService.saveApartment(dto, req.user);
   }
 
   @Roles(ROLE.admin, ROLE.manager, ROLE.owner)

@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ApartmentService {
   constructor(private prisma: PrismaService) {}
 
-  async saveApartment(dto) {
+  async saveApartment(dto, user) {
     const mySlug = slugify(`${dto.apartmentName}`, {
       replacement: '-', // replace spaces with replacement character, defaults to `-`
       remove: undefined, // remove characters that match regex, defaults to `undefined`
@@ -21,6 +21,14 @@ export class ApartmentService {
     });
 
     if (!checkProperty) throw new NotFoundException('property not found');
+
+    if (user.role == 'owner'){
+      if (checkProperty.ownerId != user.sub) throw ForbiddenException
+    }
+
+    if( user.role == 'manager') {
+      if (checkProperty.managerEmail != user.email) throw ForbiddenException
+    }
 
     try {
       const newApartment = await this.prisma.apartment.create({
