@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApartmentService } from './apartment.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/decorators/role.decorator';
@@ -7,6 +7,7 @@ import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { addApartmentDTO } from './dto';
 import { PropIdDTO } from 'src/property/dto';
+import { Request } from 'express';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('apartment')
@@ -25,7 +26,7 @@ export class ApartmentController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/:id')
-  updateApartment(@Body() dto: addApartmentDTO, @Param() param: PropIdDTO) {
-    return this.apartmentService.apartmentUpdate(dto,param);
+  updateApartment(@Body() dto: addApartmentDTO, @Param() param: PropIdDTO, @Req() req: Request) {
+    return this.apartmentService.apartmentUpdate(dto,param, req.user);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import slugify from 'slugify';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -41,7 +41,7 @@ export class ApartmentService {
     }
   }
 
-  async apartmentUpdate(dto, param){
+  async apartmentUpdate(dto, param, user){
     const { id } = param
     const mySlug = slugify(`${dto.apartmentName}`, {
       replacement: '-', // replace spaces with replacement character, defaults to `-`
@@ -63,6 +63,14 @@ export class ApartmentService {
     });
 
     if (!checkProperty) throw new NotFoundException('property not found');
+
+    if(user.role == 'manager') {
+      if(checkProperty.managerEmail != user.email ) throw ForbiddenException
+    }
+
+    if(user.role == 'owner'){
+      if(checkProperty.ownerId != user.sub) throw ForbiddenException
+    }
 
     try {
       const newApartment = await this.prisma.apartment.update({
