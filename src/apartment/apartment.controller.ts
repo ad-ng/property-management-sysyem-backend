@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApartmentService } from './apartment.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/decorators/role.decorator';
@@ -6,6 +6,7 @@ import { ROLE } from '@prisma/client';
 import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
 import { addApartmentDTO } from './dto';
+import { PropIdDTO } from 'src/property/dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('apartment')
@@ -18,5 +19,13 @@ export class ApartmentController {
   @Post('')
   addApartment(@Body() dto: addApartmentDTO) {
     return this.apartmentService.saveApartment(dto);
+  }
+
+  @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Put('/:id')
+  updateApartment(@Body() dto: addApartmentDTO, @Param() param: PropIdDTO) {
+    return this.apartmentService.apartmentUpdate(dto,param);
   }
 }

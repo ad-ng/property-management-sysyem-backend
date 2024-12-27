@@ -40,4 +40,47 @@ export class ApartmentService {
       return error;
     }
   }
+
+  async apartmentUpdate(dto, param){
+    const { id } = param
+    const mySlug = slugify(`${dto.apartmentName}`, {
+      replacement: '-', // replace spaces with replacement character, defaults to `-`
+      remove: undefined, // remove characters that match regex, defaults to `undefined`
+      lower: false, // convert to lower case, defaults to `false`
+      strict: false, // strip special characters except replacement, defaults to `false`
+      locale: 'vi', // language code of the locale to use
+      trim: true, // trim leading and trailing replacement chars, defaults to `true`
+    });
+
+    const checkApartment = await this.prisma.apartment.findUnique({
+        where: { id }
+    })
+
+    if(!checkApartment) throw new NotFoundException('apartment not found')
+
+    const checkProperty = await this.prisma.property.findUnique({
+      where: { id: dto.propertyId },
+    });
+
+    if (!checkProperty) throw new NotFoundException('property not found');
+
+    try {
+      const newApartment = await this.prisma.apartment.update({
+        where: { id },
+        data: {
+          propertyId: dto.propertyId,
+          apartmentName: dto.apartmentName,
+          floor_number: dto.floor_number,
+          slug: mySlug,
+          status: dto.status,
+        },
+      });
+      return {
+        message: 'apartment has been updated',
+        date: newApartment,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
 }
