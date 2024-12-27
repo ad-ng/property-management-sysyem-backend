@@ -5,6 +5,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { ROLE } from '@prisma/client';
 import { IsVerifiedCheck } from 'src/auth/decorators/isverified.decorator';
 import { RolesGuard } from 'src/auth/gaurds/roles.guard.ts/roles.guard.ts.guard';
+import { addApartmentDTO } from './dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('apartment')
@@ -15,7 +16,7 @@ export class ApartmentController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Post('')
-  addApartment(@Body() dto: any) {
+  addApartment(@Body() dto: addApartmentDTO) {
     return this.apartmentService.saveApartment(dto);
   }
 }
