@@ -53,22 +53,22 @@ export class ApartmentService {
     }
   }
 
-  async getOneApt(param, user){
-    const { id } = param
+  async getOneApt(param, user) {
+    const { id } = param;
     const checkApartment = await this.prisma.apartment.findUnique({
       where: { id },
       include: {
         complaint: true,
         leases: true,
-        maintenance: true
-      }
-    })
+        maintenance: true,
+      },
+    });
 
-    if(!checkApartment) throw new NotFoundException('apartment not found')
+    if (!checkApartment) throw new NotFoundException('apartment not found');
 
     const checkProperty = await this.prisma.property.findUnique({
-      where: { id: checkApartment.propertyId }
-    })
+      where: { id: checkApartment.propertyId },
+    });
 
     if (user.role == 'manager') {
       if (checkProperty.managerEmail != user.email) throw ForbiddenException;
@@ -76,12 +76,12 @@ export class ApartmentService {
 
     if (user.role == 'owner') {
       if (checkProperty.ownerId != user.sub) throw ForbiddenException;
-    }  
+    }
 
     return {
       message: 'apartment found successfully',
-      data: checkApartment
-    }
+      data: checkApartment,
+    };
   }
 
   async apartmentUpdate(dto, param, user) {
