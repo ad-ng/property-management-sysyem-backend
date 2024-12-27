@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Put,
@@ -28,6 +29,14 @@ export class ApartmentController {
   @Post('')
   addApartment(@Body() dto: addApartmentDTO, @Req() req: Request) {
     return this.apartmentService.saveApartment(dto, req.user);
+  }
+
+    @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Get('/:id')
+  getAptById(@Param() param: PropIdDTO, @Req() req: Request){
+    return this.apartmentService.getOneApt(param, req.user)
   }
 
   @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
