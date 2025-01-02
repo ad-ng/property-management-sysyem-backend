@@ -83,6 +83,9 @@ export class PropertyService {
     const { slug } = param;
     const myProperty = await this.prisma.property.findFirst({
       where: { slug, ownerId: user.sub },
+      include: {
+        apartment: true
+      }
     });
 
     if (!myProperty) throw new NotFoundException('property not found');
