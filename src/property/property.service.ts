@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { use } from 'passport';
 import slugify from 'slugify';
 import { PlaceService } from 'src/place/place.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -84,6 +83,9 @@ export class PropertyService {
     const { slug } = param;
     const myProperty = await this.prisma.property.findFirst({
       where: { slug, ownerId: user.sub },
+      include: {
+        apartment: true
+      }
     });
 
     if (!myProperty) throw new NotFoundException('property not found');
@@ -114,7 +116,7 @@ export class PropertyService {
       );
 
     if (checkProperty.ownerId === user.sub) {
-      await this.prisma.property.update({
+      const saveManager = await this.prisma.property.update({
         where: { id, ownerId: user.sub },
         data: {
           managerEmail,
@@ -129,7 +131,7 @@ export class PropertyService {
 
       return {
         message: 'manager added successfully',
-        data: checkProperty,
+        data: saveManager,
       };
     }
   }

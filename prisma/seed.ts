@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { faker, tr } from '@faker-js/faker';
 import * as argon from 'argon2'
+import { PlaceService } from "src/place/place.service";
 
 const prisma =  new PrismaClient
 async function main() {
@@ -26,38 +27,32 @@ async function main() {
         })
     }
     console.log('person seeds completed')
+    console.log("################################# seeding ##############################")
 
-    for(let i=1; i < 11; i++){
+    for (let i = 1; i < 11; i++){
       await prisma.place.create({
         data: {
-          country: {
-            create: {
-              name: 'rwanda'
-            }
-          },
           province: {
             create: {
-              name: faker.location.city()
+              name: `${faker.location.city()}${i}`
             }
           },
           district: {
             create: {
-              name: faker.location.state()
+              name: `${faker.location.state}${i}`
             }
           },
           sector: {
             create: {
-              name: faker.location.street()
+              name: `${faker.location.street()}${i}`
             }
           },
           cell: {
             create: {
-              name: faker.location.secondaryAddress()
+              name: `${faker.location.streetAddress()}${i}`
             }
-          },
-        },
-        include: {
-          country: true,
+          }
+        }, include: {
           province: true,
           district: true,
           sector: true,
@@ -65,23 +60,40 @@ async function main() {
         }
       })
     }
-    console.log('location seeds completed');
-    
-   
-    for(let i =1; i < 21; i++) {
+
+     console.log('location seeds completed')
+    console.log("################################# seeding ##############################")
+
+    for(let i = 1; i < 21; i++){
       await prisma.property.create({
         data: {
-          title: faker.company.name(),
-          slug: faker.helpers.slugify(faker.book.title()),
+          title: faker.book.title(),
+          slug: faker.helpers.slugify(faker.book.series()),
+          ownerId: faker.number.int( { min: 1, max: 10 }),
+          locationId: faker.number.int( { min: 1, max: 10 }),
           description: faker.lorem.paragraph(),
-          locationId: faker.number.int({ min: 1, max: 10 }),
-          ownerId: faker.number.int({ min: 1, max: 10 }),
-          totalUnits: faker.number.int({ min: 1, max: 30 })
+          totalUnits: faker.number.int( { min: 1, max: 30 }),
         }
       })
     }
-    console.log('property seeds completed');
-    
+
+     console.log('property seeds completed')
+    console.log("################################# seeding ##############################")
+
+    for(let i = 1; i < 31; i++){
+      const aptStatus = (i % 2 == 0 ) ? 'occupied' : 'vacant'
+      await prisma.apartment.create({
+        data: {
+          apartmentName: faker.book.title(),
+          slug: faker.helpers.slugify(faker.book.series()),
+          floor_number: faker.number.int( { min: 1, max: 15 }),
+          status: aptStatus,
+          propertyId: faker.number.int( { min: 1, max: 9 })
+        }
+      })
+    }
+    console.log('apartment seeds completed')
+    console.log("################################# seeding ##############################")
 }
 
 main()
