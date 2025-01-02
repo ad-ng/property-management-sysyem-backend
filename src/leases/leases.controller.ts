@@ -10,13 +10,13 @@ import { Request } from 'express';
 @UseGuards(AuthGuard('jwt'))
 @Controller('leases')
 export class LeasesController {
-    constructor(private leaseService: LeasesService){}
+  constructor(private leaseService: LeasesService) {}
 
-    @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
-    @UseGuards(RolesGuard)
-    @IsVerifiedCheck(true)
-    @Post('')
-    addLease(@Body() dto: any,@Req() req: Request){
-        return this.leaseService.createLease(dto, req.user)
-    }
+  @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Post('')
+  addLease(@Body() dto: any, @Req() req: Request) {
+    return this.leaseService.createLease(dto, req.user);
+  }
 }
