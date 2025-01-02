@@ -1,14 +1,14 @@
-import { ne } from '@faker-js/faker/.';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { faker, ne } from '@faker-js/faker/.';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LeasesService {
   constructor(private prisma: PrismaService) {}
 
-  async createLease(apartmentId, dto, user) {
+  async createLease(dto, user) {
     const checkApt = await this.prisma.apartment.findUnique({
-      where: { id: apartmentId },
+      where: { id: dto.apartmentId },
       include: { property: true },
     });
     if (user.role == 'manager') {
@@ -20,15 +20,22 @@ export class LeasesService {
       if (checkApt.property.ownerId != user.sub) throw ForbiddenException;
     }
 
+    const checkTenant = await this.prisma.user.findUnique({
+        where: { email: dto.tenantEmail }
+    })
+
+    if(!checkTenant) throw new NotFoundException('tenant not registered')
+
+
     try {
       const newLease = await this.prisma.leases.create({
         data: {
-          lease_start_date: dto.lease_start_date,
+          lease_start_date: Date.now().toString(),//dto.lease_start_date,
           lease_status: dto.lease_status,
-          apartmentId,
+          apartmentId: dto.apartmentId,
           tenantEmail: dto.tenantEmail,
           payment_due_day: dto.payment_due_day,
-          security_deposit: dto.security_deposit,
+          security_deposit: Date.now().toString(),//dto.security_deposit,
           monthly_rent: dto.monthly_rent,
           lease_end_date: dto.lease_end_date,
         },
