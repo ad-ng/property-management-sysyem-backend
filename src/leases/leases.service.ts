@@ -26,20 +26,23 @@ export class LeasesService {
 
     if(!checkTenant) throw new NotFoundException('tenant not registered')
 
+    if(!await this.prisma.apartment.findUnique({ where: { id: dto.apartmentId }})) throw new NotFoundException('apt not found')    
+
 
     try {
       const newLease = await this.prisma.leases.create({
         data: {
-          lease_start_date: Date.now().toString(),//dto.lease_start_date,
-          lease_status: dto.lease_status,
-          apartmentId: dto.apartmentId,
-          tenantEmail: dto.tenantEmail,
-          payment_due_day: dto.payment_due_day,
-          security_deposit: Date.now().toString(),//dto.security_deposit,
-          monthly_rent: dto.monthly_rent,
-          lease_end_date: dto.lease_end_date,
-        },
-      });
+            lease_start_date: dto.lease_start_date,
+            lease_status: dto.lease_status,
+            monthly_rent: dto.monthly_rent,
+            payment_due_day: dto.payment_due_day,
+            apartmentId: dto.apartmentId,
+            lease_end_date: dto.lease_end_date,
+            security_deposit: dto.security_deposit,
+            tenantEmail: dto.tenantEmail,
+        }
+      })
+
       delete newLease.createdAt;
       delete newLease.updatedAt;
       delete newLease.id;
