@@ -135,11 +135,11 @@ export class ApartmentService {
     }
   }
 
-  async deleteApt(param, user){
-    const { id } = param
+  async deleteApt(param, user) {
+    const { id } = param;
 
     const checkApartment = await this.prisma.apartment.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!checkApartment) throw new NotFoundException('apartment not found');
@@ -155,16 +155,16 @@ export class ApartmentService {
     if (user.role == 'owner') {
       if (checkProperty.ownerId != user.sub) throw ForbiddenException;
     }
-    
+
     try {
       const deleteA = await this.prisma.apartment.delete({
-        where: { id }
-      })
-       return {
-        message: 'apartment deleted successfully'
-       }
+        where: { id },
+      });
+      return {
+        message: 'apartment deleted successfully',
+      };
     } catch (error) {
-      return error
+      return error;
     }
   }
 }
