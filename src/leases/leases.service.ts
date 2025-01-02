@@ -82,20 +82,24 @@ export class LeasesService {
       if (checkApt.property.ownerId != user.sub) throw ForbiddenException;
     }
 
-    const checkTenant = await this.prisma.user.findUnique({
+    if(dto.tenantEmail){
+        const checkTenant = await this.prisma.user.findUnique({
       where: { email: dto.tenantEmail },
     });
 
     if (!checkTenant) throw new NotFoundException('tenant not registered');
 
     if (!checkApt) throw new NotFoundException('apt not found');
+    }
+
+    const lease_status = dto.tenantEmail ? 'active' : 'terminated'
 
     try {
       const newLease = await this.prisma.leases.update({
         where: { id },
         data: {
           lease_start_date: dto.lease_start_date,
-          lease_status: dto.lease_status,
+          lease_status,
           monthly_rent: dto.monthly_rent,
           payment_due_day: dto.payment_due_day,
           apartmentId: dto.apartmentId,
