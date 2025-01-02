@@ -67,7 +67,7 @@ export class LeasesService {
         where: { id }
     })
 
-    if(!checkLease) throw BadRequestException
+    if(!checkLease) throw new NotFoundException('lease not found')
 
     const checkApt = await this.prisma.apartment.findUnique({
       where: { id: dto.apartmentId },
