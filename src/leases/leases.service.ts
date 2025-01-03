@@ -114,8 +114,43 @@ export class LeasesService {
       delete newLease.id;
 
       return {
-        message: 'lease created successfully',
+        message: 'lease updated successfully',
         data: newLease,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async deleteLaeses(param, user){
+    const { id } = param;
+
+    const checkLease = await this.prisma.leases.findUnique({
+      where: { id }
+    });
+
+    if (!checkLease) throw new NotFoundException('lease not found');
+
+    const checkApt = await this.prisma.apartment.findUnique({
+      where: { id: checkLease.apartmentId },
+      include: { property: true },
+    });
+    if (user.role == 'manager') {
+      if (checkApt.property.managerEmail != user.email)
+        throw ForbiddenException;
+    }
+
+    if (user.role == 'owner') {
+      if (checkApt.property.ownerId != user.sub) throw ForbiddenException;
+    }
+
+    try {
+      const newLease = await this.prisma.leases.delete({
+        where: { id }
+      });
+
+      return {
+        message: 'lease deleted successfully'
       };
     } catch (error) {
       return error;
