@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Post,
   Put,
@@ -39,5 +40,13 @@ export class LeasesController {
     @Param() param: PropIdDTO,
   ) {
     return this.leaseService.updateLease(param, dto, req.user);
+  }
+
+  @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
+  @UseGuards(RolesGuard)
+  @IsVerifiedCheck(true)
+  @Delete('/:id')
+  leaseDelete(@Param() param: PropIdDTO, @Req() req: Request){
+    return this.leaseService.deleteLaeses(param,req.user)
   }
 }
