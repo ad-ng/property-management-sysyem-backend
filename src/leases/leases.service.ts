@@ -122,11 +122,11 @@ export class LeasesService {
     }
   }
 
-  async deleteLaeses(param, user){
+  async deleteLaeses(param, user) {
     const { id } = param;
 
     const checkLease = await this.prisma.leases.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!checkLease) throw new NotFoundException('lease not found');
@@ -146,11 +146,11 @@ export class LeasesService {
 
     try {
       const newLease = await this.prisma.leases.delete({
-        where: { id }
+        where: { id },
       });
 
       return {
-        message: 'lease deleted successfully'
+        message: 'lease deleted successfully',
       };
     } catch (error) {
       return error;

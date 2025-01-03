@@ -46,7 +46,7 @@ export class LeasesController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Delete('/:id')
-  leaseDelete(@Param() param: PropIdDTO, @Req() req: Request){
-    return this.leaseService.deleteLaeses(param,req.user)
+  leaseDelete(@Param() param: PropIdDTO, @Req() req: Request) {
+    return this.leaseService.deleteLaeses(param, req.user);
   }
 }
