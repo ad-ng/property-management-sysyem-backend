@@ -18,9 +18,17 @@ export class UserService {
      _______________________________________________________________________________________
   */
   async current(user) {
+    const myIncludes = { leases: false, managerOf: false, myProperty: false }
+
+    // returning data according to role
+    if (user.role == 'client') myIncludes.leases = true
+    if (user.role == 'owner') myIncludes.myProperty = true
+    if (user.role == 'manager') myIncludes.managerOf = true
+
     // getting current user
     const currentUser = await this.prisma.user.findUnique({
       where: { email: user.email },
+      include: myIncludes
     });
 
     /*
