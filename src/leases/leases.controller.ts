@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { LeasesService } from './leases.service';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { ROLE } from '@prisma/client';
@@ -25,7 +33,11 @@ export class LeasesController {
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Put('/:id')
-  leaseUpdating(@Body() dto: any, @Req() req: Request, @Param() param: PropIdDTO) {
-    return this.leaseService.updateLease(param,dto,req.user)
+  leaseUpdating(
+    @Body() dto: any,
+    @Req() req: Request,
+    @Param() param: PropIdDTO,
+  ) {
+    return this.leaseService.updateLease(param, dto, req.user);
   }
 }

@@ -1,6 +1,6 @@
 import { faker, ne } from '@faker-js/faker/.';
 import {
-    BadRequestException,
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -60,14 +60,14 @@ export class LeasesService {
     }
   }
 
-  async updateLease(param,dto,user){
-    const { id } = param
+  async updateLease(param, dto, user) {
+    const { id } = param;
 
     const checkLease = await this.prisma.leases.findUnique({
-        where: { id }
-    })
+      where: { id },
+    });
 
-    if(!checkLease) throw new NotFoundException('lease not found')
+    if (!checkLease) throw new NotFoundException('lease not found');
 
     const checkApt = await this.prisma.apartment.findUnique({
       where: { id: dto.apartmentId },
@@ -82,17 +82,17 @@ export class LeasesService {
       if (checkApt.property.ownerId != user.sub) throw ForbiddenException;
     }
 
-    if(dto.tenantEmail){
-        const checkTenant = await this.prisma.user.findUnique({
-      where: { email: dto.tenantEmail },
-    });
+    if (dto.tenantEmail) {
+      const checkTenant = await this.prisma.user.findUnique({
+        where: { email: dto.tenantEmail },
+      });
 
-    if (!checkTenant) throw new NotFoundException('tenant not registered');
+      if (!checkTenant) throw new NotFoundException('tenant not registered');
 
-    if (!checkApt) throw new NotFoundException('apt not found');
+      if (!checkApt) throw new NotFoundException('apt not found');
     }
 
-    const lease_status = dto.tenantEmail ? 'active' : 'terminated'
+    const lease_status = dto.tenantEmail ? 'active' : 'terminated';
 
     try {
       const newLease = await this.prisma.leases.update({
