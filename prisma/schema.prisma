@@ -132,10 +132,10 @@ model Leases {
   apartment        Apartment    @relation(fields: [apartmentId], references: [id])
   tenantEmail      String?
   tenant           User?        @relation(fields: [tenantEmail], references: [email])
-  lease_start_date DateTime
+  lease_start_date DateTime?
   lease_end_date   DateTime?
   monthly_rent     Int
-  security_deposit DateTime?
+  security_deposit Int?
   lease_status     lease_status
   payment_due_day  Int
   payment          Payment[]

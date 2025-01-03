@@ -52,11 +52,11 @@ export class ApartmentController {
     return this.apartmentService.apartmentUpdate(dto, param, req.user);
   }
 
-    @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
+  @Roles(ROLE.admin, ROLE.manager, ROLE.owner)
   @UseGuards(RolesGuard)
   @IsVerifiedCheck(true)
   @Delete('/:id')
-  deleteOne(@Param() param: PropIdDTO, @Req() req: Request){
-    return this.apartmentService.deleteApt(param, req.user)
+  deleteOne(@Param() param: PropIdDTO, @Req() req: Request) {
+    return this.apartmentService.deleteApt(param, req.user);
   }
 }
